@@ -1,11 +1,5 @@
 import 'package:sqflite/sqflite.dart';
 
-class Category {
-  String title;
-  String id;
-
-  Category(this.title);
-}
 
 final String tableTestModel = 'testModel';
 final String _id = '_id';
@@ -82,6 +76,20 @@ class TestModel {
     cateId = map[_cateId];
     isBought = map[_isBought] == 1;
     isTest = map[_isTest] == 1;
+  }
+
+  TestModel.fromJson(var map){
+    id = map["id"];
+    testName = map["test_name"];
+    comment = map["comment"];
+    level = map["level"];
+    creationTime = map["creation_time"];
+    duration = map["duration"];
+    enable = map["enable"];
+    coin = map["coin"];
+    rateCount = map["rate_count"];
+    cateId = map["cate_id"];
+
   }
 }
 

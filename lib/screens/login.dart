@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
-import 'package:ezquiz_flutter/model/models.dart';
+import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/screens/signup.dart';
 
 class LoginScreen extends StatefulWidget {

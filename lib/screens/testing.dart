@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
-import 'package:ezquiz_flutter/model/models.dart';
+import 'package:ezquiz_flutter/model/test.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_html_view/flutter_html_text.dart';
 import 'package:ezquiz_flutter/model/question.dart';

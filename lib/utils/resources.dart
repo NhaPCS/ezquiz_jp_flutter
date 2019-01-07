@@ -50,6 +50,17 @@ class WidgetUtil {
                 fit: BoxFit.fill, image: new CachedNetworkImageProvider(url))));
   }
 
+  static Widget getCircleImageWithMargin(double size, String url, double marg) {
+    return new Container(
+        margin: EdgeInsets.all(marg),
+        width: size,
+        height: size,
+        decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            image: new DecorationImage(
+                fit: BoxFit.fill, image: new CachedNetworkImageProvider(url))));
+  }
+
   static Widget getRoundedButton(
       BuildContext context, String text, VoidCallback callback) {
     return RaisedButton(
@@ -89,6 +100,7 @@ class ColorUtil {
   static const Color primaryColor = Color(0xFF015C04);
   static const Color primaryColorDark = Color(0xFF014504);
   static const Color red = Color(0xFFa71022);
+  static const Color textGray = Color(0xFFcacaca);
 }
 
 class StringUtil {

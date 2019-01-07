@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:ezquiz_flutter/list/new_test_list.dart';
+import 'package:ezquiz_flutter/model/category.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
-import 'package:ezquiz_flutter/model/models.dart';
-import 'package:ezquiz_flutter/screens/login.dart';
+import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,10 +10,10 @@ class HomeScreen extends StatefulWidget {
   }
 }
 
-class _HomeState extends State<HomeScreen> with TickerProviderStateMixin {
+class _HomeState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin<HomeScreen> {
   List<Menu> _listMenu;
   List<Category> _listCategories;
-  TabController _controller;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -23,37 +23,34 @@ class _HomeState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     _listMenu = getMenus();
     _listCategories = getCategories();
-    _controller = TabController(vsync: this, length: _listCategories.length);
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: getAppBar(),
-      drawer: getDrawer(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: ColorUtil.primaryColor,
-        onPressed: onFilterClick,
-        child: Icon(Icons.filter_list),
+    return DefaultTabController(
+      length: _listCategories.length,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: getAppBar(),
+        drawer: getDrawer(),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: ColorUtil.primaryColor,
+          onPressed: onFilterClick,
+          child: Icon(Icons.filter_list),
+        ),
+        body: TabBarView(
+            children: _listCategories.map<Widget>((Category _category) {
+          return ListTest();
+        }).toList()),
       ),
-      body: TabBarView(
-          controller: _controller,
-          children: _listCategories.map<Widget>((Category _category) {
-            return ListView.builder(
-              padding: Size.tinyPadding,
-              itemCount: 100,
-              itemBuilder: (BuildContext context, int index) {
-                return getTestWidget(context, index);
-              },
-            );
-          }).toList()),
     );
   }
+
+  void getListTest(String category) {}
 
   void onFilterClick() {
     if (Navigator.of(context).canPop()) {
@@ -79,52 +76,6 @@ class _HomeState extends State<HomeScreen> with TickerProviderStateMixin {
         );
       });
     }
-  }
-
-  Widget getTestWidget(BuildContext context, int index) {
-    return GestureDetector(
-      child: Card(
-        margin: Size.tinyPadding,
-        elevation: Size.elevationDefault,
-        child: Container(
-          padding: Size.defaultPaddig,
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text("24 Nov"),
-                  Text("Math"),
-                  Icon(
-                    Icons.format_color_fill,
-                    color: Colors.green,
-                  )
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  WidgetUtil.getCircleImage(Size.avatarSizeSmall,
-                      "https://images.pexels.com/photos/9291/nature-bird-flying-red.jpg"),
-                  Column(
-                    children: <Widget>[
-                      Text("This is test number $index for grade 7",
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          )),
-                      Row()
-                    ],
-                  )
-                ],
-              ),
-              Text(
-                  "Developing Apps for the Android OS gives a lot of freedom to developers and access to an ever-growing user base to the app owner. However, the developers face many Android app development challenges in the proces")
-            ],
-          ),
-        ),
-      ),
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-      },
-    );
   }
 
   AppBar getAppBar() {
@@ -158,7 +109,6 @@ class _HomeState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
         bottom: TabBar(
-            controller: _controller,
             isScrollable: true,
             tabs: _listCategories.map<Tab>((Category _category) {
               return Tab(
@@ -258,6 +208,10 @@ class _HomeState extends State<HomeScreen> with TickerProviderStateMixin {
     list.add(new Category("Done"));
     return list;
   }
+
+  @override
+  bool get wantKeepAlive => true;
+
 }
 
 class Menu {

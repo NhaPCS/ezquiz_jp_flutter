@@ -9,32 +9,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
 
-Future<void> main() async {
-  final FirebaseApp app = await FirebaseApp.configure(
-    name: 'project-298934679062',
-    options: Platform.isIOS
-        ? const FirebaseOptions(
-            googleAppID: '1:298934679062:ios:6481fb1f97530546',
-            gcmSenderID: '298934679062',
-            databaseURL: 'https://ezquiz-japanese.firebaseio.com/',
-          )
-        : const FirebaseOptions(
-            googleAppID: '1:298934679062:android:1d6ff1f49d328f36',
-            apiKey: 'AIzaSyDAYT94nXil77VZNC_sfSQ0jpO81PYr4ZA',
-            databaseURL: 'https://ezquiz-japanese.firebaseio.com/',
-          ),
-  );
-  runApp(MaterialApp(
-    theme: ThemeData(
-        fontFamily: 'base',
-        primaryColor: ColorUtil.primaryColor,
-        primaryColorDark: ColorUtil.primaryColorDark,
-        backgroundColor: ColorUtil.background,
-        scaffoldBackgroundColor: ColorUtil.background,
-        dialogBackgroundColor: Colors.white),
-    home: MyApp(),
-  ));
-}
+void main() => runApp(MaterialApp(
+  home: MyApp(),
+  theme: ThemeData(
+      fontFamily: 'base',
+      primaryColor: ColorUtil.primaryColor,
+      primaryColorDark: ColorUtil.primaryColorDark,
+      backgroundColor: ColorUtil.background,
+      scaffoldBackgroundColor: ColorUtil.background,
+      dialogBackgroundColor: Colors.white),
+));
 
 class MyApp extends StatefulWidget {
   @override
