@@ -120,7 +120,7 @@ class _SignUpState extends State<SignUpScreen> {
                               color: Colors.white,
                             ),
                           ),
-                        ),
+                        ), onPressed: () {},
                       ),
                     ],
                   ),

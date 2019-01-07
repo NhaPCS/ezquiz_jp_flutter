@@ -9,6 +9,8 @@ class Size {
 
   static const double avatarSize = 90;
   static const double avatarSizeSmall = 40;
+  static const double iconSize = 35;
+
 
   static const double textSizeDefault = 13;
   static const double textSizeSmall = 10;
@@ -16,10 +18,15 @@ class Size {
   static const double textSizeHuge = 40;
 
   static const double elevationDefault = 3;
+  static const double elevationBig= 6;
 
   static const double spaceDefault = 10;
+  static const double defaultRadius = 20;
+  static const double smallRadius = 10;
 
   static const double lineSize = 1;
+
+
 }
 
 class Constant {}
@@ -64,6 +71,15 @@ class WidgetUtil {
       color: Color.fromARGB(100, 0, 0, 0),
     ));
     return rs;
+  }
+
+
+  static Widget getPrimaryIcon(BuildContext context, IconData icon) {
+    return Icon(
+      icon,
+      color: Theme.of(context).primaryColor,
+      size: Size.iconSize,
+    );
   }
 }
 

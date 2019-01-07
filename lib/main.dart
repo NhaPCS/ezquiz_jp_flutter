@@ -49,9 +49,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    final FirebaseDatabase database = FirebaseDatabase(app: widget.app);
-    database.setPersistenceEnabled(true);
-    database.setPersistenceCacheSizeBytes(10000000);
+    FirebaseDatabase.instance.setPersistenceEnabled(true);
+    FirebaseDatabase.instance.setPersistenceCacheSizeBytes(10000000);
   }
 
   @override
