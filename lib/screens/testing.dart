@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:ezquiz_flutter/model/test.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:flutter_html_view/flutter_html_text.dart';
+import 'package:ezquiz_flutter/list_item/question_page.dart';
 import 'package:ezquiz_flutter/model/question.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:ezquiz_flutter/screens/test_result.dart';
+import 'package:flutter_html_view/flutter_html_text.dart';
 
 class TestingScreen extends StatefulWidget {
   final TestModel _testModel;
@@ -12,39 +16,41 @@ class TestingScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _TestingState(_testModel);
   }
 }
 
-class _TestingState extends State<TestingScreen> {
+class _TestingState extends State<TestingScreen>
+    with TickerProviderStateMixin<TestingScreen> {
+  AnimationController _animationController;
   final TestModel _testModel;
-  List<Question> _listQuestion;
+  List<Question> _listQuestion = List();
   SwiperController _swiperController;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  int _selectedIndex = 0;
 
   _TestingState(this._testModel);
 
   @override
   void initState() {
+    getListQuestion();
     super.initState();
     _swiperController = SwiperController();
+    _animationController = new AnimationController(
+      vsync: this,
+      duration: new Duration(seconds: _testModel.duration),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _swiperController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    _listQuestion = new List();
-    _listQuestion.add(new Question("What is your name?", "a"));
-    _listQuestion
-        .add(new Question("What is print('_TestingState.build');?", "b"));
-    _listQuestion.add(new Question("What is 3?", "a"));
-    _listQuestion.add(new Question("What is 4?", "c"));
-    _listQuestion.add(new Question("What is 5?", "a"));
-    _listQuestion.add(new Question("What is 6?", "d"));
-    _listQuestion.add(new Question("What is 7?", "d"));
-    _listQuestion.add(new Question("What is 8?", "b"));
-    _listQuestion.add(new Question("What is 9?", "c"));
-
     return Scaffold(
         key: _scaffoldKey,
         endDrawer: Drawer(
@@ -53,21 +59,17 @@ class _TestingState extends State<TestingScreen> {
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 child: Container(
-                  padding: Size.defaultPaddig,
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        _listQuestion[index].answer,
-                        style: TextStyle(color: Theme.of(context).primaryColor),
-                      ),
-                      Container(
-                        width: Size.textSizeSmall,
-                      ),
-                      Text(
-                        _listQuestion[index].question,
-                        style: TextStyle(color: Colors.grey),
-                      )
-                    ],
+                  padding: SizeUtil.defaultPaddig,
+                  child: ListTile(
+                    leading: Text(
+                      _listQuestion[index].selectedAnswer == null
+                          ? ""
+                          : _listQuestion[index].selectedAnswer,
+                      style: TextStyle(
+                          color: ColorUtil.primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    title: Text("Question number ${index + 1}"),
                   ),
                 ),
                 onTap: () {
@@ -89,12 +91,19 @@ class _TestingState extends State<TestingScreen> {
           ),
           title: Text(
             _testModel.testName,
-            style: TextStyle(color: Theme.of(context).primaryColor),
+            style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.bold),
           ),
           actions: <Widget>[
-            WidgetUtil.getPrimaryIcon(context, Icons.extension),
+            GestureDetector(
+              child: WidgetUtil.getPrimaryIcon(context, Icons.cloud_done),
+              onTap: () {
+                showSubmitDialog();
+              },
+            ),
             Container(
-              width: Size.spaceDefault,
+              width: SizeUtil.spaceDefault,
             ),
             GestureDetector(
               child: WidgetUtil.getPrimaryIcon(context, Icons.filter_list),
@@ -103,11 +112,24 @@ class _TestingState extends State<TestingScreen> {
               },
             ),
             Container(
-              width: Size.spaceDefault,
+              width: SizeUtil.spaceDefault,
             ),
           ],
         ),
+        bottomNavigationBar: Countdown(
+          total: _testModel.duration,
+          animation: new StepTween(begin: _testModel.duration, end: 0)
+              .animate(_animationController)
+                ..addStatusListener((state) {
+                  print("STATE $state");
+                  if (state == AnimationStatus.completed) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => TestResultScreen()));
+                  }
+                }),
+        ),
         body: Swiper(
+          index: _selectedIndex,
           itemCount: _listQuestion.length,
           pagination: SwiperPagination(
               builder: FractionPaginationBuilder(
@@ -115,35 +137,100 @@ class _TestingState extends State<TestingScreen> {
                   activeColor: Theme.of(context).primaryColor)),
           controller: _swiperController,
           itemBuilder: (BuildContext context, int index) {
-            return Card(
-              margin: EdgeInsets.fromLTRB(10, 10, 10, 60),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Size.smallRadius),
-              ),
-              elevation: Size.elevationBig,
-              child: Container(
-                padding: Size.defaultPaddig,
-                child: Column(
-                  children: <Widget>[
-                    Expanded(child: HtmlText(data: """
-    <!--For a much more extensive example, look at example/main.dart-->
-    <div>
-      <h1>Demo Page</h1>
-      <p>This is a fantastic nonexistent product that you should buy!</p>
-      <h2>Pricing</h2>
-      <p>Lorem ipsum <b>dolor</b> sit amet.</p>
-      <h2>The Team</h2>
-      <p>There isn't <i>really</i> a team...</p>
-      <h2>Installation</h2>
-      <p>You <u>cannot</u> install a nonexistent product!</p>
-      <!--You can pretty much put any html in here!-->
-    </div>
-  """))
-                  ],
-                ),
-              ),
-            );
+            Question _question = _listQuestion[index];
+            return QuestionPage(_question);
           },
         ));
+  }
+
+  void getListQuestion() {
+    FirebaseDatabase.instance
+        .reference()
+        .child("question")
+        .child(_testModel.id)
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      List<Question> list = List();
+      for (var value in dataSnapshot.value) {
+        list.add(new Question.fromJson(value));
+      }
+      setState(() {
+        _listQuestion = list;
+        _swiperController.move(1, animation: false);
+        _animationController.forward(from: 0.0);
+      });
+    });
+  }
+
+  void showSubmitDialog() {
+    _scaffoldKey.currentState.showBottomSheet((BuildContext context) {
+      return Container(
+        padding: SizeUtil.defaultMargin,
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
+          children: <Widget>[
+            Text(
+              "Do you want to submit this test?",
+              textAlign: TextAlign.center,
+            ),
+            Container(
+              height: SizeUtil.spaceBig,
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: SizeUtil.spaceDefault),
+                    child: WidgetUtil.getRoundedButton(context, "Cancel", () {
+                      Navigator.of(context).pop();
+                    }),
+                  ),
+                ),
+                Expanded(
+                    child: Padding(
+                  padding: EdgeInsets.only(left: SizeUtil.spaceDefault),
+                  child: WidgetUtil.getRoundedButton(context, "Submit", () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TestResultScreen()));
+                  }),
+                ))
+              ],
+            ),
+            Container(
+              height: SizeUtil.spaceBig,
+            )
+          ],
+        ),
+      );
+    });
+  }
+}
+
+class Countdown extends AnimatedWidget {
+  final int total;
+
+  Countdown({Key key, this.animation, this.total})
+      : super(key: key, listenable: animation);
+  Animation<int> animation;
+
+  @override
+  build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        LinearPercentIndicator(
+          backgroundColor: ColorUtil.background,
+          percent: (animation.value / total),
+          lineHeight: 8,
+          progressColor: ColorUtil.primaryColor,
+          width: MediaQuery.of(context).size.width * 0.95,
+        )
+      ],
+    );
   }
 }

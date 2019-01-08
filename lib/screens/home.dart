@@ -1,24 +1,35 @@
-import 'package:ezquiz_flutter/list/new_test_list.dart';
+import 'package:ezquiz_flutter/list_item/new_test_list.dart';
 import 'package:ezquiz_flutter/model/category.dart';
+import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomeScreen extends StatefulWidget {
+  final List<Category> _listCategories;
+
+  HomeScreen(this._listCategories);
+
   @override
   State<StatefulWidget> createState() {
-    return _HomeState();
+    return _HomeState(_listCategories);
   }
 }
 
 class _HomeState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin<HomeScreen> {
+    with TickerProviderStateMixin<HomeScreen> {
   List<Menu> _listMenu;
   List<Category> _listCategories;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  TabController _tabController;
+
+  _HomeState(this._listCategories);
 
   @override
   void initState() {
     super.initState();
+    _tabController = new TabController(
+        vsync: this, length: _listCategories.length, initialIndex: 0);
   }
 
   @override
@@ -28,29 +39,23 @@ class _HomeState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     _listMenu = getMenus();
-    _listCategories = getCategories();
-    return DefaultTabController(
-      length: _listCategories.length,
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: getAppBar(),
-        drawer: getDrawer(),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: ColorUtil.primaryColor,
-          onPressed: onFilterClick,
-          child: Icon(Icons.filter_list),
-        ),
-        body: TabBarView(
-            children: _listCategories.map<Widget>((Category _category) {
-          return ListTest();
-        }).toList()),
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: getAppBar(),
+      drawer: getDrawer(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: ColorUtil.primaryColor,
+        onPressed: onFilterClick,
+        child: Icon(Icons.filter_list),
       ),
+      body: TabBarView(
+          controller: _tabController,
+          children: _listCategories.map<Widget>((Category _category) {
+            return ListTest(category: _category,);
+          }).toList()),
     );
   }
-
-  void getListTest(String category) {}
 
   void onFilterClick() {
     if (Navigator.of(context).canPop()) {
@@ -60,9 +65,9 @@ class _HomeState extends State<HomeScreen>
         return new SizedBox(
           width: double.infinity,
           child: Container(
-            padding: Size.defaultPaddig,
+            padding: SizeUtil.defaultPaddig,
             child: Wrap(
-              spacing: Size.spaceDefault,
+              spacing: SizeUtil.spaceDefault,
               children: <Widget>[
                 WidgetUtil.getRoundedButton(context, "Most test rating", () {}),
                 WidgetUtil.getRoundedButton(context, "Free", () {}),
@@ -84,7 +89,7 @@ class _HomeState extends State<HomeScreen>
           children: <Widget>[
             Expanded(
               child: Container(
-                padding: Size.smallPadding,
+                padding: SizeUtil.smallPadding,
                 color: Theme.of(context).primaryColorDark,
                 child: Row(
                   children: <Widget>[
@@ -96,19 +101,20 @@ class _HomeState extends State<HomeScreen>
                       "Enter the keyword...",
                       style: TextStyle(
                           color: Colors.white.withAlpha(60),
-                          fontSize: Size.textSizeDefault),
+                          fontSize: SizeUtil.textSizeDefault),
                     ),
                   ],
                 ),
               ),
             ),
             Container(
-              width: Size.textSizeDefault,
+              width: SizeUtil.textSizeDefault,
             ),
             getSubjectPopupWidget()
           ],
         ),
         bottom: TabBar(
+            controller: _tabController,
             isScrollable: true,
             tabs: _listCategories.map<Tab>((Category _category) {
               return Tab(
@@ -121,7 +127,7 @@ class _HomeState extends State<HomeScreen>
     return new PopupMenuButton(
         child: Text(
           "Subject",
-          style: TextStyle(fontSize: Size.textSizeDefault),
+          style: TextStyle(fontSize: SizeUtil.textSizeDefault),
         ),
         itemBuilder: (_) => <PopupMenuItem<String>>[
               new PopupMenuItem<String>(
@@ -139,7 +145,7 @@ class _HomeState extends State<HomeScreen>
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return Container(
-              padding: Size.defaultPaddig,
+              padding: SizeUtil.defaultPaddig,
               color: Theme.of(context).primaryColor,
               child: Row(
                 children: <Widget>[
@@ -168,7 +174,7 @@ class _HomeState extends State<HomeScreen>
         menu.title,
         style: TextStyle(
             color: Theme.of(context).primaryColor,
-            fontSize: Size.textSizeDefault),
+            fontSize: SizeUtil.textSizeDefault),
       ),
     );
   }
@@ -199,19 +205,15 @@ class _HomeState extends State<HomeScreen>
 
   List<Category> getCategories() {
     List<Category> list = List();
-    list.add(new Category("New"));
-    list.add(new Category("Animals"));
-    list.add(new Category("Chapter 1"));
-    list.add(new Category("Chapter 2"));
-    list.add(new Category("For good one"));
-    list.add(new Category("Saved"));
-    list.add(new Category("Done"));
+//    list.add(new Category("New"));
+//    list.add(new Category("Animals"));
+//    list.add(new Category("Chapter 1"));
+//    list.add(new Category("Chapter 2"));
+//    list.add(new Category("For good one"));
+//    list.add(new Category("Saved"));
+//    list.add(new Category("Done"));
     return list;
   }
-
-  @override
-  bool get wantKeepAlive => true;
-
 }
 
 class Menu {

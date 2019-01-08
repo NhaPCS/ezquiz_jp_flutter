@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class Size {
+class SizeUtil {
   static const EdgeInsets defaultMargin = EdgeInsets.all(20);
   static const EdgeInsets defaultPaddig = EdgeInsets.all(15);
   static const EdgeInsets smallPadding = EdgeInsets.all(8);
@@ -10,23 +10,22 @@ class Size {
   static const double avatarSize = 90;
   static const double avatarSizeSmall = 40;
   static const double iconSize = 35;
+  static const double iconSizeTiny = 15;
 
-
-  static const double textSizeDefault = 13;
+  static const double textSizeDefault = 18;
   static const double textSizeSmall = 10;
-  static const double textSizeBig = 30;
-  static const double textSizeHuge = 40;
+  static const double textSizeBig = 35;
+  static const double textSizeHuge = 50;
 
   static const double elevationDefault = 3;
-  static const double elevationBig= 6;
+  static const double elevationBig = 6;
 
   static const double spaceDefault = 10;
   static const double defaultRadius = 20;
   static const double smallRadius = 10;
+  static const double spaceBig = 20;
 
   static const double lineSize = 1;
-
-
 }
 
 class Constant {}
@@ -41,7 +40,7 @@ class WidgetUtil {
 
   static Widget getCircleImage(double size, String url) {
     return new Container(
-        margin: Size.defaultPaddig,
+        margin: SizeUtil.defaultPaddig,
         width: size,
         height: size,
         decoration: new BoxDecoration(
@@ -74,6 +73,20 @@ class WidgetUtil {
     );
   }
 
+  static Widget getRoundedButtonWhite(
+      BuildContext context, String text, VoidCallback callback) {
+    return RaisedButton(
+      onPressed: callback,
+      child: Text(
+        text,
+        style: TextStyle(
+            color: ColorUtil.primaryColor, fontWeight: FontWeight.bold),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+      color: Colors.white,
+    );
+  }
+
   static List<Shadow> getTextShadow() {
     List<Shadow> rs = List();
     rs.add(Shadow(
@@ -84,12 +97,11 @@ class WidgetUtil {
     return rs;
   }
 
-
   static Widget getPrimaryIcon(BuildContext context, IconData icon) {
     return Icon(
       icon,
       color: Theme.of(context).primaryColor,
-      size: Size.iconSize,
+      size: SizeUtil.iconSize,
     );
   }
 }

@@ -23,7 +23,7 @@ class _SignUpState extends State<SignUpScreen> {
             ),
           ),
           child: Container(
-            padding: Size.defaultMargin,
+            padding: SizeUtil.defaultMargin,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -48,7 +48,7 @@ class _SignUpState extends State<SignUpScreen> {
                       Text(
                         StringUtil.appName,
                         style: TextStyle(
-                            fontSize: Size.textSizeHuge,
+                            fontSize: SizeUtil.textSizeHuge,
                             color: Colors.white,
                             shadows: WidgetUtil.getTextShadow()),
                       ),
@@ -73,10 +73,10 @@ class _SignUpState extends State<SignUpScreen> {
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: ColorUtil.hintColor),
                             filled: true,
-                            contentPadding: Size.defaultMargin),
+                            contentPadding: SizeUtil.defaultMargin),
                       ),
                       Container(
-                        height: Size.lineSize,
+                        height: SizeUtil.lineSize,
                         color: ColorUtil.background,
                       ),
                       TextField(
@@ -88,10 +88,10 @@ class _SignUpState extends State<SignUpScreen> {
                             fillColor: Colors.white,
                             filled: true,
                             hintStyle: TextStyle(color: ColorUtil.hintColor),
-                            contentPadding: Size.defaultMargin),
+                            contentPadding: SizeUtil.defaultMargin),
                       ),
                       Container(
-                        height: Size.lineSize,
+                        height: SizeUtil.lineSize,
                         color: ColorUtil.background,
                       ),
                       TextField(
@@ -103,14 +103,14 @@ class _SignUpState extends State<SignUpScreen> {
                             fillColor: Colors.white,
                             filled: true,
                             hintStyle: TextStyle(color: ColorUtil.hintColor),
-                            contentPadding: Size.defaultMargin),
+                            contentPadding: SizeUtil.defaultMargin),
                       ),
                       Container(
                         height: 10,
                       ),
                       MaterialButton(
                         color: ColorUtil.primaryColor,
-                        padding: Size.defaultPaddig,
+                        padding: SizeUtil.defaultPaddig,
                         child: SizedBox(
                           width: double.infinity,
                           child: Text(

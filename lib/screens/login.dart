@@ -24,7 +24,7 @@ class _LoginState extends State<LoginScreen> {
             ),
           ),
           child: Container(
-            padding: Size.defaultMargin,
+            padding: SizeUtil.defaultMargin,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -33,7 +33,7 @@ class _LoginState extends State<LoginScreen> {
                 ),
                 GestureDetector(
                   child: Container(
-                    padding: Size.smallPadding,
+                    padding: SizeUtil.smallPadding,
                     child: Icon(
                       Icons.arrow_back,
                       color: Colors.white,
@@ -52,7 +52,7 @@ class _LoginState extends State<LoginScreen> {
                       Text(
                         StringUtil.appName,
                         style: TextStyle(
-                            fontSize: Size.textSizeHuge,
+                            fontSize: SizeUtil.textSizeHuge,
                             color: Colors.white,
                             shadows: WidgetUtil.getTextShadow()),
                       ),
@@ -77,10 +77,10 @@ class _LoginState extends State<LoginScreen> {
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: ColorUtil.hintColor),
                             filled: true,
-                            contentPadding: Size.defaultMargin),
+                            contentPadding: SizeUtil.defaultMargin),
                       ),
                       Container(
-                        height: Size.lineSize,
+                        height: SizeUtil.lineSize,
                         color: ColorUtil.background,
                       ),
                       TextField(
@@ -92,14 +92,14 @@ class _LoginState extends State<LoginScreen> {
                             fillColor: Colors.white,
                             filled: true,
                             hintStyle: TextStyle(color: ColorUtil.hintColor),
-                            contentPadding: Size.defaultMargin),
+                            contentPadding: SizeUtil.defaultMargin),
                       ),
                       Container(
                         height: 10,
                       ),
                       MaterialButton(
                         color: ColorUtil.primaryColor,
-                        padding: Size.defaultPaddig,
+                        padding: SizeUtil.defaultPaddig,
                         child: SizedBox(
                           width: double.infinity,
                           child: Text(
@@ -113,7 +113,7 @@ class _LoginState extends State<LoginScreen> {
                       ),
                       MaterialButton(
                         color: ColorUtil.red,
-                        padding: Size.defaultPaddig,
+                        padding: SizeUtil.defaultPaddig,
                         child: SizedBox(
                           width: double.infinity,
                           child: Text(
