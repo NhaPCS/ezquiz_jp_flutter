@@ -25,7 +25,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  splashscreen: ^1.1.0
   cached_network_image: ^0.5.1
   firebase_core: ^0.2.5
   firebase_analytics: ^1.0.4

@@ -9,11 +9,11 @@ class SizeUtil {
 
   static const double avatarSize = 90;
   static const double avatarSizeSmall = 40;
-  static const double iconSize = 35;
-  static const double iconSizeTiny = 15;
+  static const double iconSize = 32;
+  static const double iconSizeTiny = 13;
 
   static const double textSizeDefault = 18;
-  static const double textSizeSmall = 10;
+  static const double textSizeSmall = 13;
   static const double textSizeBig = 35;
   static const double textSizeHuge = 50;
 
@@ -112,7 +112,7 @@ class ColorUtil {
   static const Color primaryColor = Color(0xFF015C04);
   static const Color primaryColorDark = Color(0xFF014504);
   static const Color red = Color(0xFFa71022);
-  static const Color textGray = Color(0xFFcacaca);
+  static const Color textGray = Color(0xFF949494);
 }
 
 class StringUtil {

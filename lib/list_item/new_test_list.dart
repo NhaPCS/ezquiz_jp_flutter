@@ -67,6 +67,9 @@ class _ListTestState extends State<ListTest>
                   ),
                 ],
               ),
+              Container(
+                height: SizeUtil.spaceDefault,
+              ),
               Row(
                 children: <Widget>[
                   WidgetUtil.getCircleImageWithMargin(
@@ -95,7 +98,7 @@ class _ListTestState extends State<ListTest>
                               size: SizeUtil.iconSizeTiny,
                             ),
                             Text(
-                              "${test.testBuyCount}",
+                              "${test.testBuyCount == null ? 0 : test.testBuyCount}",
                               style:
                                   TextStyle(fontSize: SizeUtil.textSizeSmall),
                             ),
@@ -107,7 +110,7 @@ class _ListTestState extends State<ListTest>
                               size: SizeUtil.iconSizeTiny,
                             ),
                             Text(
-                              "${test.testDoneCount}",
+                              "${test.testDoneCount == null ? 0 : test.testDoneCount}",
                               style:
                                   TextStyle(fontSize: SizeUtil.textSizeSmall),
                             ),
@@ -117,11 +120,13 @@ class _ListTestState extends State<ListTest>
                             Icon(
                               Icons.attach_money,
                               size: SizeUtil.iconSizeTiny,
+                              color: Colors.orange,
                             ),
                             Text(
-                              "${test.coin == 0 ? "Free" : test.coin}",
+                              "${(test.coin == 0 || test.coin == null) ? "Free" : test.coin}",
                               style: TextStyle(
                                   fontSize: SizeUtil.textSizeSmall,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.orange),
                             ),
                           ],
@@ -131,27 +136,50 @@ class _ListTestState extends State<ListTest>
                   )
                 ],
               ),
-              Text(test.testName),
+              Container(
+                height: SizeUtil.spaceBig,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  test.testName,
+                  style: TextStyle(color: ColorUtil.textGray),
+                ),
+              ),
+              Container(
+                height: SizeUtil.spaceBig,
+              ),
               Container(
                 height: SizeUtil.lineSize,
                 color: ColorUtil.background,
               ),
               Padding(
-                padding: SizeUtil.smallPadding,
+                padding: EdgeInsets.only(top: SizeUtil.spaceDefault),
                 child: Row(
                   children: <Widget>[
-                    Text("${test.rateCount} rates  ${test.comment} comments"),
+                    Text(
+                      "${test.rateCount == null ? 0 : test.rateCount} rates  ${test.comment == null ? 0 : test.comment} comments",
+                      style: TextStyle(
+                          color: ColorUtil.textGray,
+                          fontSize: SizeUtil.textSizeSmall),
+                    ),
                     Expanded(
                       child: Container(
                         width: double.infinity,
                       ),
                     ),
                     GestureDetector(
-                      child: Icon(Icons.cloud_download),
+                      child: Icon(
+                        Icons.cloud_download,
+                        color: ColorUtil.textGray,
+                      ),
                       onTap: () {},
                     ),
+                    Container(
+                      width: SizeUtil.spaceBig,
+                    ),
                     GestureDetector(
-                      child: Icon(Icons.comment),
+                      child: Icon(Icons.comment, color: ColorUtil.textGray),
                       onTap: () {},
                     )
                   ],

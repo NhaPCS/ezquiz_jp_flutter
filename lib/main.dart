@@ -1,14 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:splashscreen/splashscreen.dart';
+import 'package:ezquiz_flutter/model/category.dart';
+import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/screens/home.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:ezquiz_flutter/model/category.dart';
-import 'package:ezquiz_flutter/model/test.dart';
-import 'dart:async';
-import 'dart:io' show Platform;
+import 'package:flutter/material.dart';
 
 void main() => runApp(MaterialApp(
       home: MyApp(),
@@ -52,15 +47,23 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return SplashScreen(
-      seconds: 5,
-      title: Text("EzQuiz\nAlways with you"),
-      image: Image.network(
-          "https://images.pexels.com/photos/918441/pexels-photo-918441.jpeg"),
+    return Scaffold(
       backgroundColor: Colors.white,
-      photoSize: 60,
-      navigateAfterSeconds: HomeScreen(_listCategories),
-      styleTextUnderTheLoader: null,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset("icons/logo.png"),
+          Container(
+            height: SizeUtil.spaceBig,
+          ),
+          Text(
+            "${StringUtil.appName} \nAlways with you",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: ColorUtil.primaryColor),
+          )
+        ],
+      ),
     );
   }
 
@@ -102,8 +105,8 @@ class _MyAppState extends State<MyApp> {
       _listCategories.add(category);
       if (_listCategories.length == _categorySize) {
         setState(() {
-          print("add final ${_listCategories.length}");
-          _listCategories.add(category);
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => HomeScreen(_listCategories)));
         });
       }
     });
