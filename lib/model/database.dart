@@ -76,6 +76,17 @@ create table $tableCategory (
     return results;
   }
 
+  Future<List<String>> getLevels() async {
+    final db = await database;
+    List<Map> maps = await db.query(tableCategory,
+        columns: [_levelId],
+        groupBy: _levelId,
+        orderBy: _levelId);
+    List<String> results = List();
+    print("MAPPP ${maps}");
+    return results;
+  }
+
   void delete(String id) async {
     final db = await database;
     await db

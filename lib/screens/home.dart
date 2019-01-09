@@ -3,7 +3,7 @@ import 'package:ezquiz_flutter/model/category.dart';
 import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:ezquiz_flutter/model/database.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -22,11 +22,17 @@ class _HomeState extends State<HomeScreen>
   List<Category> _listCategories;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TabController _tabController;
+  List<String> _levels;
 
   _HomeState(this._listCategories);
 
   @override
   void initState() {
+    DBProvider.db.getLevels().then((List<String> levels) {
+      setState(() {
+        _levels = levels;
+      });
+    });
     super.initState();
     _tabController = new TabController(
         vsync: this, length: _listCategories.length, initialIndex: 0);
@@ -128,17 +134,25 @@ class _HomeState extends State<HomeScreen>
   }
 
   PopupMenuButton getSubjectPopupWidget() {
+    _levels.map<PopupMenuItem>((String level) {
+      return PopupMenuItem<String>(
+        child: Text(level),
+        value: level,
+      );
+    });
     return new PopupMenuButton(
         child: Text(
-          "Subject",
+          _levels == null ? "" : _levels[0],
           style: TextStyle(fontSize: SizeUtil.textSizeDefault),
         ),
-        itemBuilder: (_) => <PopupMenuItem<String>>[
-              new PopupMenuItem<String>(
-                  child: const Text('Doge'), value: 'Doge'),
-              new PopupMenuItem<String>(
-                  child: const Text('Lion'), value: 'Lion'),
-            ],
+        itemBuilder: (BuildContext context) {
+          return _levels.map((String level) {
+            return PopupMenuItem<String>(
+              child: Text(level),
+              value: level,
+            );
+          }).toList();
+        },
         onSelected: (_) {});
   }
 

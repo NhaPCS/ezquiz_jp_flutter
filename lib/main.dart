@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:ezquiz_flutter/model/database.dart';
 
-void main() =>
-    runApp(MaterialApp(
+void main() => runApp(MaterialApp(
       home: MyApp(),
       theme: ThemeData(
           fontFamily: 'base',
@@ -42,7 +41,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    getListCategories();
+    //getListCategories();
+    getLevels();
     super.initState();
     FirebaseDatabase.instance.setPersistenceEnabled(true);
     FirebaseDatabase.instance.setPersistenceCacheSizeBytes(10000000);
@@ -114,21 +114,37 @@ class _MyAppState extends State<MyApp> {
       }
     });
   }
-}
 
+  void getLevels() {
+    FirebaseDatabase.instance
+        .reference()
+        .child("levels")
+        .once()
+        .then((DataSnapshot dataSnapshot) {
+      Map<dynamic, dynamic> values = dataSnapshot.value;
+      values.forEach((id, value) {
+        print("level $value");
+        Map<dynamic, dynamic> cate = value;
+        cate.forEach((cateId, cateValue) {
+          Category category =
+              new Category(title: cateValue, id: cateId, levelId: id);
+          DBProvider.db.insert(category);
+        });
+      });
+      DBProvider.db
+          .getCategoriesByLevel("n5")
+          .then((List<Category> categories) {
+        _categorySize = categories.length;
+        _listCategories.clear();
+        categories.forEach((Category category) {
+          getListTest(category);
+        });
 
-void getLevels() {
-  FirebaseDatabase.instance
-      .reference()
-      .child("levels").once().then((DataSnapshot dataSnapshot) {
-    Map<dynamic, dynamic> values = dataSnapshot.value;
-    values.forEach((id, value) {
-      Map<dynamic, dynamic> cate = value[id];
-      cate.forEach((cateId, cateValue) {
-        Category category = new Category(
-            title: cateValue, id: cateId, levelId: id);
-        DBProvider.db.insert(category);
+//        setState(() {
+//          Navigator.of(context).pushReplacement(
+//              MaterialPageRoute(builder: (context) => HomeScreen(categories)));
+//        });
       });
     });
-  });
+  }
 }
