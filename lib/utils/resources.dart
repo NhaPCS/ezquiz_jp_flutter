@@ -40,13 +40,12 @@ class WidgetUtil {
 
   static Widget getCircleImage(double size, String url) {
     return new Container(
-        margin: SizeUtil.defaultPaddig,
         width: size,
         height: size,
         decoration: new BoxDecoration(
             shape: BoxShape.circle,
             image: new DecorationImage(
-                fit: BoxFit.fill, image: new CachedNetworkImageProvider(url))));
+                fit: BoxFit.cover, image: new CachedNetworkImageProvider(url))));
   }
 
   static Widget getCircleImageWithMargin(double size, String url, double marg) {

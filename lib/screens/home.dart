@@ -52,7 +52,9 @@ class _HomeState extends State<HomeScreen>
       body: TabBarView(
           controller: _tabController,
           children: _listCategories.map<Widget>((Category _category) {
-            return ListTest(category: _category,);
+            return ListTest(
+              category: _category,
+            );
           }).toList()),
     );
   }
@@ -65,6 +67,8 @@ class _HomeState extends State<HomeScreen>
         return new SizedBox(
           width: double.infinity,
           child: Container(
+            decoration: BoxDecoration(
+                border: Border.all(color: ColorUtil.primaryColor)),
             padding: SizeUtil.defaultPaddig,
             child: Wrap(
               spacing: SizeUtil.spaceDefault,
@@ -145,15 +149,36 @@ class _HomeState extends State<HomeScreen>
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return Container(
-              padding: SizeUtil.defaultPaddig,
+              padding: SizeUtil.defaultMargin,
               color: Theme.of(context).primaryColor,
               child: Row(
                 children: <Widget>[
-//                  WidgetUtil.getCircleImage(Size.avatarSize,
-//                      "https://images.pexels.com/photos/638700/pexels-photo-638700.jpeg"),
-                  Text(
-                    "Nha Nha Nha \n \n 100pt",
-                    style: TextStyle(color: Colors.white),
+                  WidgetUtil.getCircleImage(SizeUtil.avatarSize,
+                      "https://images.pexels.com/photos/638700/pexels-photo-638700.jpeg"),
+                  Container(
+                    width: SizeUtil.spaceBig,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "Nha Nha Nha",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          height: SizeUtil.spaceDefault,
+                        ),
+                        Text(
+                          "100 coin",
+                          style: TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),

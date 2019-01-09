@@ -4,8 +4,11 @@ import 'package:ezquiz_flutter/screens/home.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:ezquiz_flutter/model/database.dart';
 
-void main() => runApp(MaterialApp(
+void main() =>
+    runApp(MaterialApp(
       home: MyApp(),
       theme: ThemeData(
           fontFamily: 'base',
@@ -80,7 +83,7 @@ class _MyAppState extends State<MyApp> {
       Map<dynamic, dynamic> values = dataSnapshot.value;
       _categorySize = values.length;
       values.forEach((id, value) {
-        Category category = new Category(id, value);
+        Category category = new Category(id: id, title: value);
         getListTest(category);
         list.add(category);
         print("id $id value $value");
@@ -105,7 +108,7 @@ class _MyAppState extends State<MyApp> {
       _listCategories.add(category);
       if (_listCategories.length == _categorySize) {
         setState(() {
-          Navigator.of(context).push(MaterialPageRoute(
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => HomeScreen(_listCategories)));
         });
       }
@@ -113,12 +116,19 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-void getLevelTest(String level) {
+
+void getLevels() {
   FirebaseDatabase.instance
       .reference()
-      .child("test")
-      .orderByChild("level")
-      .equalTo(level)
-      .onChildAdded
-      .listen((Event event) {});
+      .child("levels").once().then((DataSnapshot dataSnapshot) {
+    Map<dynamic, dynamic> values = dataSnapshot.value;
+    values.forEach((id, value) {
+      Map<dynamic, dynamic> cate = value[id];
+      cate.forEach((cateId, cateValue) {
+        Category category = new Category(
+            title: cateValue, id: cateId, levelId: id);
+        DBProvider.db.insert(category);
+      });
+    });
+  });
 }
