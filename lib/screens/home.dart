@@ -1,9 +1,9 @@
 import 'package:ezquiz_flutter/list_item/new_test_list.dart';
 import 'package:ezquiz_flutter/model/category.dart';
-import 'package:ezquiz_flutter/model/test.dart';
+import 'package:ezquiz_flutter/data/database.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
-import 'package:ezquiz_flutter/model/database.dart';
+import 'package:ezquiz_flutter/data/shared_value.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -22,15 +22,22 @@ class _HomeState extends State<HomeScreen>
   List<Category> _listCategories;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TabController _tabController;
-  List<String> _levels;
+  List<String> _levels = List();
+  String _selectedLevel;
 
   _HomeState(this._listCategories);
 
   @override
   void initState() {
+    ShareValueProvider.shareValueProvider.getCurrentLevel().then((level) {
+      setState(() {
+        _selectedLevel = level.toLowerCase();
+      });
+    });
     DBProvider.db.getLevels().then((List<String> levels) {
       setState(() {
         _levels = levels;
+        print("Level $_levels");
       });
     });
     super.initState();
@@ -134,26 +141,30 @@ class _HomeState extends State<HomeScreen>
   }
 
   PopupMenuButton getSubjectPopupWidget() {
-    _levels.map<PopupMenuItem>((String level) {
-      return PopupMenuItem<String>(
-        child: Text(level),
-        value: level,
-      );
-    });
-    return new PopupMenuButton(
+    return new PopupMenuButton<String>(
         child: Text(
-          _levels == null ? "" : _levels[0],
-          style: TextStyle(fontSize: SizeUtil.textSizeDefault),
+          _selectedLevel == null ? "" : _selectedLevel.toUpperCase(),
+          style: TextStyle(
+              fontSize: SizeUtil.textSizeDefault, fontWeight: FontWeight.bold),
         ),
         itemBuilder: (BuildContext context) {
           return _levels.map((String level) {
             return PopupMenuItem<String>(
-              child: Text(level),
+              child: Text(
+                level.toUpperCase(),
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               value: level,
             );
           }).toList();
         },
-        onSelected: (_) {});
+        onSelected: (String value) {
+          setState(() {
+            _selectedLevel = value;
+            ShareValueProvider.shareValueProvider
+                .saveCurrentLevel(_selectedLevel);
+          });
+        });
   }
 
   Drawer getDrawer() {
@@ -240,18 +251,6 @@ class _HomeState extends State<HomeScreen>
         Menu(WidgetUtil.getIcon(context, Icons.assignment), "Term and policy"));
     menus.add(Menu(WidgetUtil.getIcon(context, Icons.call_missed), "Logout"));
     return menus;
-  }
-
-  List<Category> getCategories() {
-    List<Category> list = List();
-//    list.add(new Category("New"));
-//    list.add(new Category("Animals"));
-//    list.add(new Category("Chapter 1"));
-//    list.add(new Category("Chapter 2"));
-//    list.add(new Category("For good one"));
-//    list.add(new Category("Saved"));
-//    list.add(new Category("Done"));
-    return list;
   }
 }
 

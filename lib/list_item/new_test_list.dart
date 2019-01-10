@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:ezquiz_flutter/utils/resources.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:ezquiz_flutter/model/category.dart';
 import 'package:ezquiz_flutter/model/test.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ezquiz_flutter/screens/login.dart';
 import 'package:ezquiz_flutter/screens/testing.dart';
+import 'package:ezquiz_flutter/utils/resources.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ListTest extends StatefulWidget {

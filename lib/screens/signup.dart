@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
-import 'package:ezquiz_flutter/model/test.dart';
+import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override

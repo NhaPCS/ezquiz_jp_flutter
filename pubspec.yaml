@@ -36,6 +36,7 @@ dev_dependencies:
   percent_indicator: ^1.0.12
   flutter_circular_chart: ^0.1.0
   flutter_redux: ^0.5.3
+  shared_preferences: ^0.4.3
 
 
 

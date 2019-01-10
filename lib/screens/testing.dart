@@ -1,13 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:ezquiz_flutter/utils/resources.dart';
-import 'package:ezquiz_flutter/model/test.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:ezquiz_flutter/list_item/question_page.dart';
 import 'package:ezquiz_flutter/model/question.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:percent_indicator/percent_indicator.dart';
+import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/screens/test_result.dart';
-import 'package:flutter_html_view/flutter_html_text.dart';
+import 'package:ezquiz_flutter/utils/resources.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class TestingScreen extends StatefulWidget {
   final TestModel _testModel;
@@ -215,7 +214,7 @@ class Countdown extends AnimatedWidget {
 
   Countdown({Key key, this.animation, this.total})
       : super(key: key, listenable: animation);
-  Animation<int> animation;
+  final Animation<int> animation;
 
   @override
   build(BuildContext context) {

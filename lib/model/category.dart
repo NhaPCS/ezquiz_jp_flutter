@@ -1,6 +1,4 @@
 import 'package:ezquiz_flutter/model/test.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:ezquiz_flutter/model/database.dart';
 
 final String tableCategory = 'category';
 final String _id = 'id';

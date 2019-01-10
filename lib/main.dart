@@ -1,11 +1,10 @@
 import 'package:ezquiz_flutter/model/category.dart';
+import 'package:ezquiz_flutter/data/database.dart';
 import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/screens/home.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:ezquiz_flutter/model/database.dart';
 
 void main() => runApp(MaterialApp(
       home: MyApp(),
@@ -70,26 +69,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void getListCategories() {
-    _listCategories.clear();
-    _categorySize = 0;
-    FirebaseDatabase.instance
-        .reference()
-        .child("levels")
-        .child("n5")
-        .once()
-        .then((DataSnapshot dataSnapshot) {
-      List<Category> list = List();
-      Map<dynamic, dynamic> values = dataSnapshot.value;
-      _categorySize = values.length;
-      values.forEach((id, value) {
-        Category category = new Category(id: id, title: value);
-        getListTest(category);
-        list.add(category);
-        print("id $id value $value");
-      });
-    });
-  }
 
   void getListTest(Category category) {
     FirebaseDatabase.instance
@@ -102,7 +81,6 @@ class _MyAppState extends State<MyApp> {
       List<TestModel> list = List();
       for (var value in dataSnapshot.value.values) {
         list.add(new TestModel.fromJson(value));
-        print("test $value");
       }
       category.lisTest = list;
       _listCategories.add(category);
