@@ -5,6 +5,7 @@ import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/data/shared_value.dart';
 import 'package:ezquiz_flutter/screens/history.dart';
+import 'package:ezquiz_flutter/data/service.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -163,9 +164,10 @@ class _HomeState extends State<HomeScreen>
         },
         onSelected: (String value) {
           ShareValueProvider.shareValueProvider
-              .saveCurrentLevel(_selectedLevel);
+              .saveCurrentLevel(value);
           setState(() {
             _selectedLevel = value;
+            changeLevel(context, _selectedLevel);
           });
         });
   }
@@ -224,6 +226,7 @@ class _HomeState extends State<HomeScreen>
     return ListTile(
       onTap: () {
         if(menu.title.contains("History")) {
+          Navigator.of(context).pop();
           Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryScreen()));
         }
       },

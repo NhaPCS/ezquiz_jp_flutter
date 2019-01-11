@@ -53,3 +53,20 @@ void changeLevel(BuildContext context, String level) async {
     }
   });
 }
+
+Future<List<Category>> changeLevelFuture(BuildContext context, String level) async {
+  List<Category> categories = await DBProvider.db.getCategoriesByLevel(level);
+  int _totalSize = categories.length;
+  int _index = 0;
+  categories.forEach((Category category) async {
+    List<TestModel> listTest = await getListTest(category);
+    print(
+        "CATEGORY_INFO ${category.title} list: ${listTest == null ? 0 : listTest.length}");
+    category.lisTest = listTest;
+    print("print here ${category.lisTest}");
+    _index++;
+    if (_index == _totalSize) {
+      return categories;
+    }
+  });
+}

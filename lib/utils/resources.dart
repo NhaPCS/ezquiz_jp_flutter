@@ -24,6 +24,7 @@ class SizeUtil {
   static const double defaultRadius = 20;
   static const double smallRadius = 10;
   static const double spaceBig = 20;
+  static const double spaceSmall = 5;
 
   static const double lineSize = 1;
 }
@@ -115,6 +116,7 @@ class WidgetUtil {
 
 class ColorUtil {
   static const Color background = Color(0xFFF4F4F4);
+  static const Color lineColor = Color(0xFFE2E2E2);
   static const Color hintColor = Color(0xFFDBDBDB);
   static const Color primaryColor = Color(0xFF015C04);
   static const Color primaryColorDark = Color(0xFF014504);

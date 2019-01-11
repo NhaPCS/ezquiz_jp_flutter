@@ -13,6 +13,19 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryState extends State<HistoryScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final List<History> _listHistory = List();
+  String _selectedType;
+  Map<String, String> _mapTypes;
+
+  @override
+  void initState() {
+    _mapTypes = Map();
+    _mapTypes["all"] = "All";
+    _mapTypes["good"] = "Good";
+    _mapTypes["normal"] = "Normal";
+    _mapTypes["too_bad"] = "Too bad";
+    _selectedType = _mapTypes["all"];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +44,42 @@ class _HistoryState extends State<HistoryScreen> {
           "Test history",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
+        actions: <Widget>[getSubjectPopupWidget()],
       ),
-      body: ListView.builder(itemCount: 100, itemBuilder: (context, index) {
-       // History history = _listHistory[index];
-        return HistoryItem();
-      }),
+      body: ListView.builder(
+          itemCount: 100,
+          itemBuilder: (context, index) {
+            // History history = _listHistory[index];
+            return HistoryItem();
+          }),
     );
+  }
+
+  PopupMenuButton getSubjectPopupWidget() {
+    return new PopupMenuButton<String>(
+        child: Center(
+          child: Padding(
+            padding: SizeUtil.defaultPaddig,
+            child: Text(
+              _selectedType,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: SizeUtil.textSizeDefault,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        itemBuilder: (BuildContext context) {
+          return _mapTypes.keys.map((String id) {
+            return PopupMenuItem<String>(
+              child: Text(
+                _mapTypes[id],
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              value: id,
+            );
+          }).toList();
+        },
+        onSelected: (String value) {});
   }
 }
