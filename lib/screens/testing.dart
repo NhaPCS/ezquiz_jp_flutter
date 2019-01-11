@@ -5,7 +5,6 @@ import 'package:ezquiz_flutter/screens/test_result.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class TestingScreen extends StatefulWidget {

@@ -4,6 +4,7 @@ import 'package:ezquiz_flutter/data/database.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/data/shared_value.dart';
+import 'package:ezquiz_flutter/screens/history.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -221,6 +222,11 @@ class _HomeState extends State<HomeScreen>
 
   Widget getMenuItem(Menu menu) {
     return ListTile(
+      onTap: () {
+        if(menu.title.contains("History")) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryScreen()));
+        }
+      },
       leading: menu.icon,
       title: Text(
         menu.title,

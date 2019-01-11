@@ -103,6 +103,14 @@ class WidgetUtil {
       size: SizeUtil.iconSize,
     );
   }
+
+  static Widget getPrimaryIconWithColor(BuildContext context, IconData icon, Color color) {
+    return Icon(
+      icon,
+      color: color,
+      size: SizeUtil.iconSize,
+    );
+  }
 }
 
 class ColorUtil {
@@ -112,6 +120,7 @@ class ColorUtil {
   static const Color primaryColorDark = Color(0xFF014504);
   static const Color red = Color(0xFFa71022);
   static const Color textGray = Color(0xFF949494);
+  static const Color textColor = Color(0xFF383838);
 }
 
 class StringUtil {
