@@ -159,10 +159,10 @@ class _HomeState extends State<HomeScreen>
           }).toList();
         },
         onSelected: (String value) {
+          ShareValueProvider.shareValueProvider
+              .saveCurrentLevel(_selectedLevel);
           setState(() {
             _selectedLevel = value;
-            ShareValueProvider.shareValueProvider
-                .saveCurrentLevel(_selectedLevel);
           });
         });
   }

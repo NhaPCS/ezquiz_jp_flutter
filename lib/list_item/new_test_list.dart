@@ -26,8 +26,7 @@ class _ListTestState extends State<ListTest>
 
   @override
   void initState() {
-    print("print here");
-    //  if (_listTest.isEmpty) getListTest();
+
     super.initState();
   }
 
@@ -36,7 +35,7 @@ class _ListTestState extends State<ListTest>
     super.build(context);
     return ListView.builder(
       padding: SizeUtil.tinyPadding,
-      itemCount: _listTest.length,
+      itemCount: _listTest == null ? 0 : _listTest.length,
       itemBuilder: (BuildContext context, int index) {
         return getTestWidget(_listTest[index]);
       },

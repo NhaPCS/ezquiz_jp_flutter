@@ -24,7 +24,7 @@ class _TestingState extends State<TestingScreen>
   AnimationController _animationController;
   final TestModel _testModel;
   List<Question> _listQuestion = List();
-  SwiperController _swiperController;
+  PageController _pageController;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
 
@@ -34,7 +34,7 @@ class _TestingState extends State<TestingScreen>
   void initState() {
     getListQuestion();
     super.initState();
-    _swiperController = SwiperController();
+    _pageController = PageController(initialPage: 0, keepPage: true);
     _animationController = new AnimationController(
       vsync: this,
       duration: new Duration(seconds: _testModel.duration),
@@ -44,7 +44,7 @@ class _TestingState extends State<TestingScreen>
   @override
   void dispose() {
     _animationController.dispose();
-    _swiperController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -72,7 +72,7 @@ class _TestingState extends State<TestingScreen>
                   ),
                 ),
                 onTap: () {
-                  _swiperController.move(index, animation: true);
+                  _pageController.jumpToPage(_selectedIndex);
                   Navigator.of(context).pop();
                 },
               );
@@ -127,18 +127,13 @@ class _TestingState extends State<TestingScreen>
                   }
                 }),
         ),
-        body: Swiper(
-          index: _selectedIndex,
-          itemCount: _listQuestion.length,
-          pagination: SwiperPagination(
-              builder: FractionPaginationBuilder(
-                  color: Colors.grey,
-                  activeColor: Theme.of(context).primaryColor)),
-          controller: _swiperController,
-          itemBuilder: (BuildContext context, int index) {
-            Question _question = _listQuestion[index];
-            return QuestionPage(_question);
+        body: PageView.builder(
+          controller: _pageController,
+          itemBuilder: (context, index) {
+            Question question = _listQuestion[index];
+            return QuestionPage(question);
           },
+          itemCount: _listQuestion.length,
         ));
   }
 
@@ -154,9 +149,11 @@ class _TestingState extends State<TestingScreen>
         list.add(new Question.fromJson(value));
       }
       setState(() {
+        _selectedIndex = 0;
         _listQuestion = list;
-        _swiperController.move(1, animation: false);
+        _pageController.jumpToPage(_selectedIndex);
         _animationController.forward(from: 0.0);
+        print("QUESTION LIST $_listQuestion");
       });
     });
   }

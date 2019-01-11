@@ -1,10 +1,10 @@
 import 'package:ezquiz_flutter/model/category.dart';
-import 'package:ezquiz_flutter/data/database.dart';
-import 'package:ezquiz_flutter/model/test.dart';
-import 'package:ezquiz_flutter/screens/home.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:ezquiz_flutter/data/service.dart';
+import 'package:ezquiz_flutter/data/database.dart';
+import 'package:ezquiz_flutter/data/shared_value.dart';
 
 void main() => runApp(MaterialApp(
       home: MyApp(),
@@ -35,12 +35,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<Category> _listCategories = List();
-  int _categorySize = 0;
-
   @override
   void initState() {
-    //getListCategories();
     getLevels();
     super.initState();
     FirebaseDatabase.instance.setPersistenceEnabled(true);
@@ -69,60 +65,10 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-
-  void getListTest(Category category) {
-    FirebaseDatabase.instance
-        .reference()
-        .child("test")
-        .orderByChild("cate_id")
-        .equalTo(category.id)
-        .once()
-        .then((DataSnapshot dataSnapshot) {
-      List<TestModel> list = List();
-      for (var value in dataSnapshot.value.values) {
-        list.add(new TestModel.fromJson(value));
-      }
-      category.lisTest = list;
-      _listCategories.add(category);
-      if (_listCategories.length == _categorySize) {
-        setState(() {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => HomeScreen(_listCategories)));
-        });
-      }
-    });
-  }
-
   void getLevels() {
-    FirebaseDatabase.instance
-        .reference()
-        .child("levels")
-        .once()
-        .then((DataSnapshot dataSnapshot) {
-      Map<dynamic, dynamic> values = dataSnapshot.value;
-      values.forEach((id, value) {
-        print("level $value");
-        Map<dynamic, dynamic> cate = value;
-        cate.forEach((cateId, cateValue) {
-          Category category =
-              new Category(title: cateValue, id: cateId, levelId: id);
-          DBProvider.db.insert(category);
-        });
-      });
-      DBProvider.db
-          .getCategoriesByLevel("n5")
-          .then((List<Category> categories) {
-        _categorySize = categories.length;
-        _listCategories.clear();
-        categories.forEach((Category category) {
-          getListTest(category);
-        });
-
-//        setState(() {
-//          Navigator.of(context).pushReplacement(
-//              MaterialPageRoute(builder: (context) => HomeScreen(categories)));
-//        });
-      });
+    getListLevels().then((success) async {
+      changeLevel(context,
+          await ShareValueProvider.shareValueProvider.getCurrentLevel());
     });
   }
 }
