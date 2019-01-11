@@ -114,11 +114,13 @@ class _HomeState extends State<HomeScreen>
                       Icons.search,
                       color: Colors.white.withAlpha(60),
                     ),
-                    Text(
-                      "Enter the keyword...",
-                      style: TextStyle(
-                          color: Colors.white.withAlpha(60),
-                          fontSize: SizeUtil.textSizeDefault),
+                    Expanded(
+                      child: Text(
+                        "Enter the keyword...",
+                        style: TextStyle(
+                            color: Colors.white.withAlpha(60),
+                            fontSize: SizeUtil.textSizeDefault),
+                      ),
                     ),
                   ],
                 ),
