@@ -8,6 +8,7 @@ class SizeUtil {
   static const EdgeInsets tinyPadding = EdgeInsets.all(5);
 
   static const double avatarSize = 90;
+  static const double avatarSizeBig = 150;
   static const double avatarSizeSmall = 40;
   static const double iconSize = 32;
   static const double iconSizeTiny = 13;

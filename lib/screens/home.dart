@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/data/shared_value.dart';
 import 'package:ezquiz_flutter/screens/history.dart';
 import 'package:ezquiz_flutter/data/service.dart';
+import 'package:ezquiz_flutter/screens/profile.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -215,19 +216,27 @@ class _HomeState extends State<HomeScreen>
             );
           } else {
             Menu menu = _listMenu[index - 1];
-            return getMenuItem(menu);
+            return getMenuItem(menu, index);
           }
         },
       ),
     );
   }
 
-  Widget getMenuItem(Menu menu) {
+  Widget getMenuItem(Menu menu, int index) {
     return ListTile(
       onTap: () {
-        if(menu.title.contains("History")) {
-          Navigator.of(context).pop();
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryScreen()));
+        switch(index) {
+          case 1:
+            break;
+          case 2:
+            Navigator.of(context).pop();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryScreen()));
+            break;
+          case 3:
+            Navigator.of(context).pop();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+            break;
         }
       },
       leading: menu.icon,
