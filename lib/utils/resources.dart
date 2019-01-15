@@ -23,6 +23,7 @@ class SizeUtil {
 
   static const double spaceDefault = 10;
   static const double defaultRadius = 20;
+  static const double bigRadius = 30;
   static const double smallRadius = 10;
   static const double spaceBig = 20;
   static const double spaceSmall = 5;

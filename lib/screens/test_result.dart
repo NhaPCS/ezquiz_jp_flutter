@@ -89,7 +89,9 @@ class _TestResultState extends State<TestResultScreen> {
               ),
               WidgetUtil.getRoundedButtonWhite(context, "Do it again", () {}),
               WidgetUtil.getRoundedButtonWhite(context, "View answer", () {}),
-              WidgetUtil.getRoundedButtonWhite(context, "Come back", () {}),
+              WidgetUtil.getRoundedButtonWhite(context, "Come back", () {
+                Navigator.of(context).pop();
+              }),
               Container(
                 height: SizeUtil.spaceBig,
               )

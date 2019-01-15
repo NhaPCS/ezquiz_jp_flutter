@@ -7,6 +7,7 @@ import 'package:ezquiz_flutter/data/shared_value.dart';
 import 'package:ezquiz_flutter/screens/history.dart';
 import 'package:ezquiz_flutter/data/service.dart';
 import 'package:ezquiz_flutter/screens/profile.dart';
+import 'package:ezquiz_flutter/screens/payment.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -237,6 +238,10 @@ class _HomeState extends State<HomeScreen>
             Navigator.of(context).pop();
             Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
             break;
+          case 4:
+            Navigator.of(context).pop();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen()));
+            break;
         }
       },
       leading: menu.icon,
@@ -256,10 +261,6 @@ class _HomeState extends State<HomeScreen>
     menus.add(Menu(WidgetUtil.getIcon(context, Icons.person), " Profile"));
     menus
         .add(Menu(WidgetUtil.getIcon(context, Icons.attach_money), " Getcoin"));
-    menus.add(Menu(WidgetUtil.getIcon(context, Icons.star), "Following"));
-    menus.add(Menu(WidgetUtil.getIcon(context, Icons.chat), "Chat"));
-    menus.add(
-        Menu(WidgetUtil.getIcon(context, Icons.cloud_upload), "Create test"));
     menus.add(Menu(null, "Other"));
     menus.add(
         Menu(WidgetUtil.getIcon(context, Icons.rate_review), "Rate this app"));
