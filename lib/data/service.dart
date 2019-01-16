@@ -4,6 +4,7 @@ import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/model/category.dart';
 import 'package:ezquiz_flutter/screens/home.dart';
 import 'package:flutter/material.dart';
+import 'package:ezquiz_flutter/model/coin.dart';
 
 Future<List<TestModel>> getListTest(Category category) async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
@@ -54,7 +55,8 @@ void changeLevel(BuildContext context, String level) async {
   });
 }
 
-Future<List<Category>> changeLevelFuture(BuildContext context, String level) async {
+Future<List<Category>> changeLevelFuture(
+    BuildContext context, String level) async {
   List<Category> categories = await DBProvider.db.getCategoriesByLevel(level);
   int _totalSize = categories.length;
   int _index = 0;
@@ -69,4 +71,21 @@ Future<List<Category>> changeLevelFuture(BuildContext context, String level) asy
       return categories;
     }
   });
+}
+
+Future<bool> getListCoins() async {
+  DataSnapshot dataSnapshot = await FirebaseDatabase.instance
+      .reference()
+      .child("payment_settings")
+      .once();
+  Map<dynamic, dynamic> values = dataSnapshot.value;
+  values.forEach((id, value) {
+    print("payment $value");
+    Map<dynamic, dynamic> cate = value;
+    cate.forEach((payId, payValue) {
+      Coin coin = Coin.fromMap(payValue);
+      DBProvider.db.insertCoin(coin);
+    });
+  });
+  return true;
 }

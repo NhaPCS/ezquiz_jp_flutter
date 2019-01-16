@@ -1,16 +1,19 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
 import 'package:ezquiz_flutter/model/category.dart';
+import 'package:ezquiz_flutter/model/coin.dart';
 
 final String tableCategory = 'category';
+final String tableCoin = 'coin';
+
 final String _id = 'id';
 final String _title = 'title';
 final String _levelId = 'levelId';
+final String _cost = 'cost';
+final String _coin = 'coin';
 
 class DBProvider {
   static final String databaseName = "ezquiz_jp.db";
@@ -34,12 +37,21 @@ class DBProvider {
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await db.execute('''
-create table $tableCategory ( 
+create table IF NOT EXISTS $tableCategory ( 
   $_id text primary key, 
   $_title text not null,
-  $_levelId integer not null)
+  $_levelId integer not null);
+  
+  create table IF NOT EXISTS $tableCoin ( 
+  $_id text primary key, 
+  $_cost text not null,
+  $_coin integer not null)
 ''');
-    });
+    }, onUpgrade: _onUpgrade);
+  }
+
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    return Future.value();
   }
 
   void insert(Category category) async {
@@ -49,13 +61,6 @@ create table $tableCategory (
     } on DatabaseException {
       await db.update(tableCategory, category.toMap());
     }
-  }
-
-  void insertList(List<Category> categories) async {
-    final db = await database;
-    categories.forEach((Category category) async {
-      await db.insert(tableCategory, category.toMap());
-    });
   }
 
   Future<Category> getCategory(String id) async {
@@ -104,6 +109,27 @@ create table $tableCategory (
     final db = await database;
     await db.update(tableCategory, todo.toMap(),
         where: '$_id = ?', whereArgs: [todo.id]);
+  }
+
+  void insertCoin(Coin coin) async {
+    final db = await database;
+    try {
+      await db.insert(tableCoin, coin.toMap());
+    } on DatabaseException {
+      await db.update(tableCoin, coin.toMap());
+    }
+  }
+
+  Future<List<Coin>> getListCoins() async {
+    final db = await database;
+    List<Map> maps = await db.query(tableCoin, columns: [_id, _coin, _cost]);
+    List<Coin> results = List();
+    if (maps.length > 0) {
+      maps.forEach((map) {
+        results.add(Coin.fromMap(map));
+      });
+    }
+    return results;
   }
 
   void close() async {

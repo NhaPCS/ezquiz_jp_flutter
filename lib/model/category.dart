@@ -25,8 +25,3 @@ class Category {
     levelId = map[_levelId];
   }
 }
-
-class CategoryProvider {
-
-
-}

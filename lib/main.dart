@@ -1,12 +1,11 @@
-import 'package:ezquiz_flutter/model/category.dart';
+import 'package:ezquiz_flutter/data/service.dart';
+import 'package:ezquiz_flutter/data/shared_value.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:ezquiz_flutter/data/service.dart';
-import 'package:ezquiz_flutter/data/database.dart';
-import 'package:ezquiz_flutter/data/shared_value.dart';
 
-void main() => runApp(MaterialApp(
+void main() =>
+    runApp(MaterialApp(
       home: MyApp(),
       theme: ThemeData(
           fontFamily: 'base',
@@ -37,6 +36,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
+    getListCoins();
     getLevels();
     super.initState();
     FirebaseDatabase.instance.setPersistenceEnabled(true);
