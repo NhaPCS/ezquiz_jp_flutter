@@ -36,17 +36,9 @@ class DBProvider {
     String path = join(documentsDirectory.path, databaseName);
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-      await db.execute('''
-create table IF NOT EXISTS $tableCategory ( 
-  $_id text primary key, 
-  $_title text not null,
-  $_levelId integer not null);
-  
-  create table IF NOT EXISTS $tableCoin ( 
-  $_id text primary key, 
-  $_cost text not null,
-  $_coin integer not null)
-''');
+      await db.execute(
+          'create table IF NOT EXISTS $tableCategory ($_id text primary key,$_title text not null,$_levelId integer not null)');
+      await db.execute('create table IF NOT EXISTS $tableCoin ($_id text primary key,$_cost text not null,$_coin integer not null)');
     }, onUpgrade: _onUpgrade);
   }
 

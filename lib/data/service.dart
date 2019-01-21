@@ -81,11 +81,8 @@ Future<bool> getListCoins() async {
   Map<dynamic, dynamic> values = dataSnapshot.value;
   values.forEach((id, value) {
     print("payment $value");
-    Map<dynamic, dynamic> cate = value;
-    cate.forEach((payId, payValue) {
-      Coin coin = Coin.fromMap(payValue);
-      DBProvider.db.insertCoin(coin);
-    });
+    Coin coin = Coin.fromMap(value);
+    DBProvider.db.insertCoin(coin);
   });
   return true;
 }

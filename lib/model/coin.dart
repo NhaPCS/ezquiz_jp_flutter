@@ -15,7 +15,7 @@ class Coin {
     return map;
   }
 
-  Coin.fromMap(Map<String, dynamic> map) {
+  Coin.fromMap(Map<dynamic, dynamic> map) {
     id = map[_id];
     cost = map[_cost];
     coin = map[_coin];
