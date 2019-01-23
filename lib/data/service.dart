@@ -5,6 +5,7 @@ import 'package:ezquiz_flutter/model/category.dart';
 import 'package:ezquiz_flutter/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/model/coin.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 Future<List<TestModel>> getListTest(Category category) async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
@@ -86,3 +87,14 @@ Future<bool> getListCoins() async {
   });
   return true;
 }
+
+Future<bool> isBought(String testId) async {
+  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  if(user == null) return false;
+  DataSnapshot dataSnapshot = await FirebaseDatabase.instance
+      .reference()
+      .child("buy_history").child(user.uid).child(testId)
+      .once();
+  return dataSnapshot.value != null;
+}
+

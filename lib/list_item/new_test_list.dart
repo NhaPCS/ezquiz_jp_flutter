@@ -6,6 +6,7 @@ import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ListTest extends StatefulWidget {
   final Category category;
@@ -26,7 +27,6 @@ class _ListTestState extends State<ListTest>
 
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -192,8 +192,12 @@ class _ListTestState extends State<ListTest>
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => LoginScreen()));
         else {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TestingScreen(test)));
+          if (FirebaseAuth.instance.currentUser() != null) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => TestingScreen(test)));
+          } else {
+
+          }
         }
       },
     );
