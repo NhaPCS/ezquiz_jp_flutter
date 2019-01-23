@@ -6,6 +6,9 @@ import 'package:ezquiz_flutter/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/model/coin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+import 'package:ezquiz_flutter/data/shared_value.dart';
 
 Future<List<TestModel>> getListTest(Category category) async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
@@ -90,11 +93,52 @@ Future<bool> getListCoins() async {
 
 Future<bool> isBought(String testId) async {
   FirebaseUser user = await FirebaseAuth.instance.currentUser();
-  if(user == null) return false;
+  if (user == null) return false;
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
       .reference()
-      .child("buy_history").child(user.uid).child(testId)
+      .child("buy_history")
+      .child(user.uid)
+      .child(testId)
       .once();
   return dataSnapshot.value != null;
 }
 
+Future getAPIUrl() async {
+  DataSnapshot dataSnapshot = await FirebaseDatabase.instance
+      .reference()
+      .child("system_settings")
+      .child("api_url")
+      .once();
+  print("api: ${dataSnapshot.value}");
+  ShareValueProvider.shareValueProvider.saveApiUrl(dataSnapshot.value);
+}
+
+Future<bool> sigIn(String email, String pass) async {
+  FirebaseUser user = await FirebaseAuth.instance
+      .signInWithEmailAndPassword(email: email, password: pass);
+  return user != null;
+}
+
+Future<bool> createUser(String email, String pass) async {
+  FirebaseUser user = await FirebaseAuth.instance
+      .createUserWithEmailAndPassword(email: email, password: pass);
+  return user != null;
+}
+
+Future buyTest(TestModel test) async {
+  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  if (user == null) return;
+  // This example uses the Google Books API to search for books about http.
+  // https://developers.google.com/books/docs/overview
+  var baseUrl = await ShareValueProvider.shareValueProvider.getAPIUrl();
+  print(baseUrl);
+  // Await the http get response, then decode the json-formatted responce.
+  var response = await http.post("${baseUrl}buyTest",
+      body: {"test_id": test.id, "user_id": user.uid, "test_coin": "${test.coin}"});
+  if (response.statusCode == 200) {
+    var jsonResponse = convert.jsonDecode(response.body);
+    print("Number of books about http: $jsonResponse.");
+  } else {
+    print("Request failed with status: ${response.statusCode}.");
+  }
+}

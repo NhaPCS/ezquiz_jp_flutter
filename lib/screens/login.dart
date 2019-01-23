@@ -1,6 +1,8 @@
 import 'package:ezquiz_flutter/screens/signup.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
+import 'package:ezquiz_flutter/data/service.dart';
+import 'package:ezquiz_flutter/utils/resources.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,9 +13,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginScreen> {
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: Container(
           decoration: new BoxDecoration(
@@ -69,6 +79,7 @@ class _LoginState extends State<LoginScreen> {
                         height: 100,
                       ),
                       TextField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                             prefixIcon: Icon(Icons.account_circle),
                             hintText: StringUtil.hintEmail,
@@ -83,6 +94,7 @@ class _LoginState extends State<LoginScreen> {
                         color: ColorUtil.background,
                       ),
                       TextField(
+                        controller: _passController,
                         obscureText: true,
                         decoration: InputDecoration(
                             prefixIcon: Icon(Icons.vpn_key),
@@ -108,7 +120,15 @@ class _LoginState extends State<LoginScreen> {
                               color: Colors.white,
                             ),
                           ),
-                        ), onPressed: () {},
+                        ), onPressed: () {
+                          sigIn(_emailController.text, _passController.text).then((success) {
+                            if(success) {
+                              Navigator.pop(context);
+                            } else{
+                              WidgetUtil.showMessageDialog(context, "Error", "Login failed. Please check and try again!");
+                            }
+                          });
+                      },
                       ),
                       MaterialButton(
                         color: ColorUtil.red,

@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:ezquiz_flutter/screens/login.dart';
+import 'package:ezquiz_flutter/model/test.dart';
+import 'package:ezquiz_flutter/data/service.dart';
 
 class SizeUtil {
   static const EdgeInsets defaultMargin = EdgeInsets.all(20);
@@ -48,7 +51,8 @@ class WidgetUtil {
         decoration: new BoxDecoration(
             shape: BoxShape.circle,
             image: new DecorationImage(
-                fit: BoxFit.cover, image: new CachedNetworkImageProvider(url))));
+                fit: BoxFit.cover,
+                image: new CachedNetworkImageProvider(url))));
   }
 
   static Widget getCircleImageWithMargin(double size, String url, double marg) {
@@ -107,12 +111,86 @@ class WidgetUtil {
     );
   }
 
-  static Widget getPrimaryIconWithColor(BuildContext context, IconData icon, Color color) {
+  static Widget getPrimaryIconWithColor(
+      BuildContext context, IconData icon, Color color) {
     return Icon(
       icon,
       color: color,
       size: SizeUtil.iconSize,
     );
+  }
+
+  static showMessageDialog(BuildContext context, String title, String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              title,
+              style: TextStyle(
+                  color: ColorUtil.primaryColor, fontWeight: FontWeight.bold),
+            ),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "OK",
+                    style: TextStyle(
+                        color: ColorUtil.primaryColor,
+                        fontWeight: FontWeight.bold),
+                  ))
+            ],
+          );
+        });
+  }
+
+  static showBuyTestDialog(BuildContext context, TestModel test) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              test.testName,
+              style: TextStyle(
+                  color: ColorUtil.primaryColor, fontWeight: FontWeight.bold),
+            ),
+            content: Text("Do you want to buy ${test.testName} by ${test.coin} coins?"),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    buyTest(test);
+                  },
+                  child: Text(
+                    "Yes",
+                    style: TextStyle(
+                        color: ColorUtil.primaryColor,
+                        fontWeight: FontWeight.bold),
+                  ))
+            ],
+          );
+        });
+  }
+
+  static showLoginDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Login Request"),
+            content: Text("Please login to continue."),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                  },
+                  child: Text("Login"))
+            ],
+          );
+        });
   }
 }
 
@@ -135,6 +213,7 @@ class StringUtil {
   static const String hintPassword = "Enter your password";
   static const String hintConfirmPassword = "Confirm your password";
   static const String signIn = "Sign in";
+  static const String signUp = "Sign up";
   static const String signInByGoogle = "Sign in by Google";
   static const String notHaveAccSignIn = "Not have account? Sign up now!";
   static const String copyRight = "Copy right 2017, ezquiz.com";

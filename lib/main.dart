@@ -38,6 +38,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     getListCoins();
     getLevels();
+    getAPIUrl();
     super.initState();
     FirebaseDatabase.instance.setPersistenceEnabled(true);
     FirebaseDatabase.instance.setPersistenceCacheSizeBytes(10000000);

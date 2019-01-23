@@ -1,18 +1,21 @@
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
+import 'package:ezquiz_flutter/data/service.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _SignUpState();
   }
 }
 
 class _SignUpState extends State<SignUpScreen> {
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: Container(
           decoration: new BoxDecoration(
@@ -65,6 +68,7 @@ class _SignUpState extends State<SignUpScreen> {
                         height: 100,
                       ),
                       TextField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                             prefixIcon: Icon(Icons.account_circle),
                             hintText: StringUtil.hintEmail,
@@ -79,6 +83,7 @@ class _SignUpState extends State<SignUpScreen> {
                         color: ColorUtil.background,
                       ),
                       TextField(
+                        controller: _passController,
                         obscureText: true,
                         decoration: InputDecoration(
                             prefixIcon: Icon(Icons.vpn_key),
@@ -113,13 +118,21 @@ class _SignUpState extends State<SignUpScreen> {
                         child: SizedBox(
                           width: double.infinity,
                           child: Text(
-                            StringUtil.signIn,
+                            StringUtil.signUp,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
                             ),
                           ),
-                        ), onPressed: () {},
+                        ), onPressed: () {
+                          createUser(_emailController.text, _passController.text).then((success) {
+                            if(success) {
+                              Navigator.pop(context);
+                            } else{
+                              WidgetUtil.showMessageDialog(context, "Error", "Signup failed. Please check and try again!");
+                            }
+                          });
+                      },
                       ),
                     ],
                   ),

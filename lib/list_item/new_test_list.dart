@@ -188,17 +188,18 @@ class _ListTestState extends State<ListTest>
         ),
       ),
       onTap: () {
-        if (FirebaseAuth.instance.currentUser() == null)
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()));
-        else {
-          if (FirebaseAuth.instance.currentUser() != null) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => TestingScreen(test)));
+        FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+          if (user != null) {
+            if (test.isBought != null && !test.isBought) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TestingScreen(test)));
+            } else {
+              WidgetUtil.showBuyTestDialog(context, test);
+            }
           } else {
-
+            WidgetUtil.showLoginDialog(context);
           }
-        }
+        });
       },
     );
   }
