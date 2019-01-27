@@ -1,21 +1,22 @@
 import 'package:ezquiz_flutter/model/category.dart';
 import 'package:ezquiz_flutter/model/test.dart';
-import 'package:ezquiz_flutter/screens/login.dart';
 import 'package:ezquiz_flutter/screens/testing.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ezquiz_flutter/data/response.dart';
+import 'package:ezquiz_flutter/data/service.dart';
 
 class ListTest extends StatefulWidget {
   final Category category;
 
-  const ListTest({Key key, this.category}) : super(key: key);
+  ListTest({Key key, this.category});
 
   @override
   State<StatefulWidget> createState() {
     return _ListTestState(category.lisTest);
+    ;
   }
 }
 
@@ -188,20 +189,44 @@ class _ListTestState extends State<ListTest>
         ),
       ),
       onTap: () {
-        FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
-          if (user != null) {
-            if (test.isBought != null && !test.isBought) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => TestingScreen(test)));
-            } else {
-              WidgetUtil.showBuyTestDialog(context, test);
-            }
-          } else {
-            WidgetUtil.showLoginDialog(context);
-          }
-        });
+        _onBuyTestClick(test);
       },
     );
+  }
+
+  _onBuyTestClick(TestModel test) {
+    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      if (user != null) {
+        if (test.coin != null && test.coin > 0) if (test.isBought != null &&
+            !test.isBought) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => TestingScreen(test)));
+        } else {
+          WidgetUtil.showBuyTestDialog(widget, context, test, () {
+            Navigator.pop(context);
+            buyTest(context, test).then((BaseResponse baseResponse) {
+              _onBuyTestDone(baseResponse, test);
+            });
+          });
+        }
+        else {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => TestingScreen(test)));
+        }
+      } else {
+        WidgetUtil.showLoginDialog(context);
+      }
+    });
+  }
+
+  void _onBuyTestDone(BaseResponse baseResponse, TestModel test) {
+    if (baseResponse.isSuccess()) {
+      test.isBought = true;
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => TestingScreen(test)));
+    } else {
+      WidgetUtil.showErrorDialog(context, baseResponse.message);
+    }
   }
 
   @override

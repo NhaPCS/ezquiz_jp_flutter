@@ -8,7 +8,10 @@ import 'package:ezquiz_flutter/model/coin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:ezquiz_flutter/data/response.dart';
 import 'package:ezquiz_flutter/data/shared_value.dart';
+import 'package:ezquiz_flutter/utils/resources.dart';
+import 'package:ezquiz_flutter/screens/payment.dart';
 
 Future<List<TestModel>> getListTest(Category category) async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
@@ -125,20 +128,29 @@ Future<bool> createUser(String email, String pass) async {
   return user != null;
 }
 
-Future buyTest(TestModel test) async {
+Future<BaseResponse> buyTest(BuildContext context, TestModel test) async {
   FirebaseUser user = await FirebaseAuth.instance.currentUser();
-  if (user == null) return;
+  if (user == null)
+    return BaseResponse(
+        status: BaseResponse.ERROR_AUTH,
+        message: "You must login to buy this test.");
   // This example uses the Google Books API to search for books about http.
   // https://developers.google.com/books/docs/overview
   var baseUrl = await ShareValueProvider.shareValueProvider.getAPIUrl();
   print(baseUrl);
   // Await the http get response, then decode the json-formatted responce.
-  var response = await http.post("${baseUrl}buyTest",
-      body: {"test_id": test.id, "user_id": user.uid, "test_coin": "${test.coin}"});
+  var response = await http.post("${baseUrl}buyTest", body: {
+    "test_id": test.id,
+    "user_id": user.uid,
+    "test_coin": "${test.coin}"
+  });
   if (response.statusCode == 200) {
     var jsonResponse = convert.jsonDecode(response.body);
-    print("Number of books about http: $jsonResponse.");
+    BaseResponse baseResponse = BaseResponse.fromJson(jsonResponse);
+    return baseResponse;
   } else {
     print("Request failed with status: ${response.statusCode}.");
+    return BaseResponse(
+        status: BaseResponse.ERROR_OTHER, message: "Error. Please try again!");
   }
 }

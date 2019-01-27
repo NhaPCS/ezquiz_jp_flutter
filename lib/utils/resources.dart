@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/screens/login.dart';
 import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/data/service.dart';
+import 'package:ezquiz_flutter/data/response.dart';
+import 'package:ezquiz_flutter/screens/testing.dart';
+import 'package:ezquiz_flutter/list_item/new_test_list.dart';
 
 class SizeUtil {
   static const EdgeInsets defaultMargin = EdgeInsets.all(20);
@@ -147,22 +150,74 @@ class WidgetUtil {
         });
   }
 
-  static showBuyTestDialog(BuildContext context, TestModel test) {
+  static showErrorDialog(BuildContext context, String message) {
     showDialog(
         context: context,
         builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Notice",
+              style:
+                  TextStyle(color: ColorUtil.red, fontWeight: FontWeight.bold),
+            ),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "OK",
+                    style: TextStyle(
+                        color: ColorUtil.red, fontWeight: FontWeight.bold),
+                  ))
+            ],
+          );
+        });
+  }
+
+  static showAlertDialog(BuildContext context, String title, String message,
+      String positive, VoidCallback positiveClick) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              title,
+              style: TextStyle(
+                  color: ColorUtil.primaryColor, fontWeight: FontWeight.bold),
+            ),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: positiveClick,
+                  child: Text(
+                    positive,
+                    style: TextStyle(
+                        color: ColorUtil.primaryColor,
+                        fontWeight: FontWeight.bold),
+                  ))
+            ],
+          );
+        });
+  }
+
+  static showBuyTestDialog(
+      ListTest listTest, BuildContext context, TestModel test, VoidCallback onBuyCallback) {
+    showDialog(
+        context: context,
+        builder: (BuildContext contextBuilder) {
           return AlertDialog(
             title: Text(
               test.testName,
               style: TextStyle(
                   color: ColorUtil.primaryColor, fontWeight: FontWeight.bold),
             ),
-            content: Text("Do you want to buy ${test.testName} by ${test.coin} coins?"),
+            content: Text(
+                "Do you want to buy ${test.testName} by ${test.coin} coins?"),
             actions: <Widget>[
               FlatButton(
-                  onPressed: () {
-                    buyTest(test);
-                  },
+                  onPressed: onBuyCallback,
                   child: Text(
                     "Yes",
                     style: TextStyle(
