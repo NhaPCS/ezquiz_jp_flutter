@@ -106,6 +106,45 @@ Future<bool> isBought(String testId) async {
   return dataSnapshot.value != null;
 }
 
+Future<int> getCoinReward() async {
+  DataSnapshot dataSnapshot = await FirebaseDatabase.instance
+      .reference()
+      .child("system_settings")
+      .child("coin_bonus")
+      .once();
+  return dataSnapshot.value;
+}
+
+Future<void> incrementCoins(int coin) async {
+  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  if (user == null) return;
+  await FirebaseDatabase.instance
+      .reference()
+      .child("user")
+      .child(user.uid)
+      .child("coin")
+      .runTransaction((MutableData mutableData) async {
+    mutableData.value = (mutableData.value ?? 0) + coin;
+    return mutableData;
+  });
+}
+
+typedef CoinCallBack = void Function(int coin);
+
+void getCurrentCoins(CoinCallBack callBack) async {
+  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  if (user == null) return;
+  FirebaseDatabase.instance
+      .reference()
+      .child("user")
+      .child(user.uid)
+      .child("coin")
+      .onValue
+      .listen((Event event) {
+    callBack(event.snapshot.value);
+  });
+}
+
 Future getAPIUrl() async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
       .reference()

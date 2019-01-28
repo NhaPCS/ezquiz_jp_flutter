@@ -37,7 +37,9 @@ class SizeUtil {
   static const double lineSize = 1;
 }
 
-class Constant {}
+class Constant {
+  static const String ADS_REWARD_ID = "ca-app-pub-9000513260892268/3210837108";
+}
 
 class WidgetUtil {
   static Icon getIcon(BuildContext context, IconData icon) {

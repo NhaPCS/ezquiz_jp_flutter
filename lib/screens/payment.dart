@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ezquiz_flutter/screens/tab_buy_history.dart';
 import 'package:ezquiz_flutter/model/payment_history.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'package:ezquiz_flutter/data/service.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override
@@ -17,8 +19,16 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentState extends State<PaymentScreen>
     with SingleTickerProviderStateMixin<PaymentScreen> {
   List<Coin> _listCoins = List();
-  TabController _tabController;
   List<PaymentHistory> _listPaymentHistory = List();
+  int _coinBonus;
+  int _currentCoin = 0;
+
+  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['foo', 'bar'],
+    contentUrl: 'http://foo.com/bar.html',
+    childDirected: true,
+    nonPersonalizedAds: true,
+  );
 
   @override
   void initState() {
@@ -27,6 +37,9 @@ class _PaymentState extends State<PaymentScreen>
         _listCoins = list;
       });
     });
+    _loadRewardAds();
+    _getBonusCoinReward();
+    _getCurrentCoin();
     super.initState();
   }
 
@@ -55,7 +68,9 @@ class _PaymentState extends State<PaymentScreen>
                 child: WidgetUtil.getPrimaryIconWithColor(
                     context, Icons.monetization_on, Colors.white),
               ),
-              onTap: () {},
+              onTap: () {
+                _showRewardAds();
+              },
             )
           ],
         ),
@@ -89,7 +104,7 @@ class _PaymentState extends State<PaymentScreen>
                         width: SizeUtil.spaceBig,
                       ),
                       Text(
-                        "123",
+                        _currentCoin == null ? "" : "$_currentCoin",
                         style: TextStyle(
                             color: Colors.orange, fontWeight: FontWeight.bold),
                       ),
@@ -179,5 +194,38 @@ class _PaymentState extends State<PaymentScreen>
         ),
       ),
     );
+  }
+
+  void _getBonusCoinReward() async {
+    _coinBonus = await getCoinReward();
+  }
+
+  void _getCurrentCoin() async {
+    getCurrentCoins((int coin) {
+      setState(() {
+        _currentCoin = coin;
+      });
+    });
+  }
+
+  void _showRewardAds() {
+    RewardedVideoAd.instance.show();
+  }
+
+  void _loadRewardAds() {
+    RewardedVideoAd.instance.listener =
+        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+      print("RewardedVideoAd event $event");
+      if (event == RewardedVideoAdEvent.rewarded) {
+        setState(() {
+          incrementCoins(_coinBonus);
+          WidgetUtil.showMessageDialog(
+              context, "Bonus coins", "Congratulation! You got $_coinBonus coins!");
+        });
+      }
+    };
+    RewardedVideoAd.instance.load(
+        adUnitId: Constant.ADS_REWARD_ID,
+        targetingInfo: MobileAdTargetingInfo());
   }
 }

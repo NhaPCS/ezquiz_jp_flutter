@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ezquiz_flutter/data/response.dart';
 import 'package:ezquiz_flutter/data/service.dart';
+import 'package:ezquiz_flutter/screens/payment.dart';
+import 'package:ezquiz_flutter/screens/login.dart';
 
 class ListTest extends StatefulWidget {
   final Category category;
@@ -225,7 +227,18 @@ class _ListTestState extends State<ListTest>
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => TestingScreen(test)));
     } else {
-      WidgetUtil.showErrorDialog(context, baseResponse.message);
+      if (baseResponse.status == BaseResponse.ERROR_OUT_BALANCE) {
+        WidgetUtil.showAlertDialog(
+            context, "Notice", baseResponse.message, "Get coin", () {
+          Navigator.pop(context);
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => PaymentScreen()));
+        });
+      } else if (baseResponse.status == BaseResponse.ERROR_AUTH) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => LoginScreen()));
+      } else
+        WidgetUtil.showErrorDialog(context, baseResponse.message);
     }
   }
 
