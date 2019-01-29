@@ -1,3 +1,5 @@
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+
 final String tableCoin = 'coin';
 final String _id = 'id';
 final String _cost = 'cost';
@@ -7,8 +9,9 @@ class Coin {
   String id;
   int coin;
   String cost;
+  IAPItem iapItem;
 
-  Coin({this.id, this.coin, this.cost});
+  Coin({this.id, this.coin, this.cost, this.iapItem});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{_id: id, _coin: coin, _cost: cost};

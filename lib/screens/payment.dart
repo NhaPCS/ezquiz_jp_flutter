@@ -8,6 +8,10 @@ import 'package:ezquiz_flutter/screens/tab_buy_history.dart';
 import 'package:ezquiz_flutter/model/payment_history.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:ezquiz_flutter/data/service.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/services.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override
@@ -219,13 +223,38 @@ class _PaymentState extends State<PaymentScreen>
       if (event == RewardedVideoAdEvent.rewarded) {
         setState(() {
           incrementCoins(_coinBonus);
-          WidgetUtil.showMessageDialog(
-              context, "Bonus coins", "Congratulation! You got $_coinBonus coins!");
+          WidgetUtil.showMessageDialog(context, "Bonus coins",
+              "Congratulation! You got $_coinBonus coins!");
         });
       }
     };
     RewardedVideoAd.instance.load(
         adUnitId: Constant.ADS_REWARD_ID,
         targetingInfo: MobileAdTargetingInfo());
+  }
+
+  Future<Null> _getProduct() async {
+    List<String> skus = await _getSkus();
+//    List<IAPItem> items = await FlutterInappPurchase.getProducts(skus);
+//    for(Coin coin in _listCoins) {
+//      coin.iapItem = items
+//    }
+//    for (var item in items) {
+//      print('${item.toString()}');
+//      this._items.add(item);
+//    }
+//
+//    setState(() {
+//      this._items = items;
+//      this._purchases = [];
+//    });
+  }
+
+  Future<List<String>> _getSkus() async{
+    List<String> list = List();
+    for (Coin coin in _listCoins) {
+      list.add(coin.id);
+    }
+    return list;
   }
 }
