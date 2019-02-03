@@ -12,6 +12,7 @@ import 'package:ezquiz_flutter/data/response.dart';
 import 'package:ezquiz_flutter/data/shared_value.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:ezquiz_flutter/screens/payment.dart';
+import 'package:ezquiz_flutter/model/user.dart';
 
 Future<List<TestModel>> getListTest(Category category) async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
@@ -165,6 +166,24 @@ Future<bool> createUser(String email, String pass) async {
   FirebaseUser user = await FirebaseAuth.instance
       .createUserWithEmailAndPassword(email: email, password: pass);
   return user != null;
+}
+
+Future<void> getUserProfile() async {
+  FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
+  if (firebaseUser != null) {
+    DataSnapshot dataSnapshot = await FirebaseDatabase.instance
+        .reference()
+        .child("user")
+        .child(firebaseUser.uid)
+        .once();
+    if (dataSnapshot.value != null && dataSnapshot.value["id"] != null) {
+      print("Value user ${dataSnapshot.value}");
+      ShareValueProvider.shareValueProvider.saveUserProfile(dataSnapshot.value);
+    } else{
+      ShareValueProvider.shareValueProvider.saveUserProfile(null);
+    }
+  }
+  return;
 }
 
 Future<BaseResponse> buyTest(BuildContext context, TestModel test) async {

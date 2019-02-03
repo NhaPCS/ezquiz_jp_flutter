@@ -29,10 +29,10 @@ class _TabBuy extends State<TabBuy> {
         itemBuilder: (context, index) {
           PaymentHistory paymentHistory = _listPaymentHistory[index];
           return Card(
-            margin: SizeUtil.defaultPaddig,
+            margin: SizeUtil.defaultPadding,
             child: Container(
               color: Colors.white,
-              padding: SizeUtil.defaultPaddig,
+              padding: SizeUtil.defaultPadding,
               child: Column(
                 children: <Widget>[
                   HtmlText(data: paymentHistory.content,),

@@ -36,7 +36,7 @@ class _QuestionPageState extends State<QuestionPage>
       ),
       elevation: SizeUtil.elevationBig,
       child: Container(
-        padding: SizeUtil.defaultPaddig,
+        padding: SizeUtil.defaultPadding,
         child: ListView(
           children: <Widget>[
             Row(

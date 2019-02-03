@@ -51,7 +51,7 @@ class _ListTestState extends State<ListTest>
         margin: SizeUtil.tinyPadding,
         elevation: SizeUtil.elevationDefault,
         child: Container(
-          padding: SizeUtil.defaultPaddig,
+          padding: SizeUtil.defaultPadding,
           child: Column(
             children: <Widget>[
               Row(

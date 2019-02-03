@@ -59,7 +59,7 @@ class _HistoryState extends State<HistoryScreen> {
     return new PopupMenuButton<String>(
         child: Center(
           child: Padding(
-            padding: SizeUtil.defaultPaddig,
+            padding: SizeUtil.defaultPadding,
             child: Text(
               _selectedType,
               textAlign: TextAlign.center,

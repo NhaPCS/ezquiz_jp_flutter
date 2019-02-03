@@ -14,11 +14,5 @@ class Question {
     answers["b"] = map["answers"]["b"];
     answers["c"] = map["answers"]["c"];
     answers["d"] = map["answers"]["d"];
-//    answers = Map();
-//    answers.putIfAbsent("a", map["answers"]["a"]);
-//    answers.putIfAbsent("b", map["answers"]["b"]);
-//    answers.putIfAbsent("c", map["answers"]["c"]);
-//    answers.putIfAbsent("d", map["answers"]["d"]);
-
   }
 }

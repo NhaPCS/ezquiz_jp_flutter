@@ -8,6 +8,7 @@ import 'package:ezquiz_flutter/screens/history.dart';
 import 'package:ezquiz_flutter/data/service.dart';
 import 'package:ezquiz_flutter/screens/profile.dart';
 import 'package:ezquiz_flutter/screens/payment.dart';
+import 'package:ezquiz_flutter/list_item/profile_header.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -86,7 +87,7 @@ class _HomeState extends State<HomeScreen>
           child: Container(
             decoration: BoxDecoration(
                 border: Border.all(color: ColorUtil.primaryColor)),
-            padding: SizeUtil.defaultPaddig,
+            padding: SizeUtil.defaultPadding,
             child: Wrap(
               spacing: SizeUtil.spaceDefault,
               children: <Widget>[
@@ -180,41 +181,7 @@ class _HomeState extends State<HomeScreen>
         itemCount: _listMenu.length,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
-            return Container(
-              padding: SizeUtil.defaultMargin,
-              color: Theme.of(context).primaryColor,
-              child: Row(
-                children: <Widget>[
-                  WidgetUtil.getCircleImage(SizeUtil.avatarSize,
-                      "https://images.pexels.com/photos/638700/pexels-photo-638700.jpeg"),
-                  Container(
-                    width: SizeUtil.spaceBig,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Nha Nha Nha",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                        Container(
-                          height: SizeUtil.spaceDefault,
-                        ),
-                        Text(
-                          "100 coin",
-                          style: TextStyle(
-                              color: Colors.orange,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            );
+            return ProfileHeader();
           } else {
             Menu menu = _listMenu[index - 1];
             return getMenuItem(menu, index);

@@ -79,7 +79,7 @@ class _PaymentState extends State<PaymentScreen>
           ],
         ),
         body: Padding(
-          padding: SizeUtil.defaultPaddig,
+          padding: SizeUtil.defaultPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -93,7 +93,7 @@ class _PaymentState extends State<PaymentScreen>
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: <Widget>[
                       Container(
-                        padding: SizeUtil.defaultPaddig,
+                        padding: SizeUtil.defaultPadding,
                         child: Text(
                           "Current coins:",
                           style: TextStyle(

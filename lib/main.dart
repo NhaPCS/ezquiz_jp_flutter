@@ -39,6 +39,7 @@ class _MyAppState extends State<MyApp> {
     getListCoins();
     getLevels();
     getAPIUrl();
+    getUserProfile();
     super.initState();
     FirebaseDatabase.instance.setPersistenceEnabled(true);
     FirebaseDatabase.instance.setPersistenceCacheSizeBytes(10000000);
@@ -72,4 +73,5 @@ class _MyAppState extends State<MyApp> {
           await ShareValueProvider.shareValueProvider.getCurrentLevel());
     });
   }
+
 }

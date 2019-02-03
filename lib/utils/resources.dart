@@ -9,7 +9,7 @@ import 'package:ezquiz_flutter/list_item/new_test_list.dart';
 
 class SizeUtil {
   static const EdgeInsets defaultMargin = EdgeInsets.all(20);
-  static const EdgeInsets defaultPaddig = EdgeInsets.all(15);
+  static const EdgeInsets defaultPadding = EdgeInsets.all(15);
   static const EdgeInsets smallPadding = EdgeInsets.all(8);
   static const EdgeInsets tinyPadding = EdgeInsets.all(5);
 
@@ -32,6 +32,7 @@ class SizeUtil {
   static const double bigRadius = 30;
   static const double smallRadius = 10;
   static const double spaceBig = 20;
+  static const double spaceHuge = 35;
   static const double spaceSmall = 5;
 
   static const double lineSize = 1;

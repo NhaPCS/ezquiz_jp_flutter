@@ -1,8 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ezquiz_flutter/model/user.dart';
 
 class ShareValueProvider {
   final String _currentLevel = "current_level";
-  final String _api_url = "api_url";
+  final String _apiUrl = "api_url";
+  final String _userProfile = "user_profile";
+  static User _currentUser;
 
   ShareValueProvider._();
 
@@ -21,12 +24,34 @@ class ShareValueProvider {
 
   Future<String> getAPIUrl() async {
     final shareValueProvider = await SharedPreferences.getInstance();
-    String rs = shareValueProvider.getString(_api_url);
+    String rs = shareValueProvider.getString(_apiUrl);
     return rs;
   }
 
   void saveApiUrl(String url) async {
     final shareValueProvider = await SharedPreferences.getInstance();
-    shareValueProvider.setString(_api_url, url);
+    shareValueProvider.setString(_apiUrl, url);
+  }
+
+  void saveUserProfile(String user) async {
+    final shareValueProvider = await SharedPreferences.getInstance();
+    if (user == null) {
+      shareValueProvider.remove(_userProfile);
+    } else
+      shareValueProvider.setString(_userProfile, user);
+  }
+
+  Future<User> getUserProfile() async {
+    if (_currentUser != null)
+      return _currentUser;
+    else {
+      final shareValueProvider = await SharedPreferences.getInstance();
+      String json = shareValueProvider.getString(_userProfile);
+      if (json != null) {
+        _currentUser = User.fromJson(json);
+        return _currentUser;
+      } else
+        return null;
+    }
   }
 }

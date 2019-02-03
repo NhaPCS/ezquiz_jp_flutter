@@ -57,7 +57,7 @@ class _TestingState extends State<TestingScreen>
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 child: Container(
-                  padding: SizeUtil.defaultPaddig,
+                  padding: SizeUtil.defaultPadding,
                   child: ListTile(
                     leading: Text(
                       _listQuestion[index].selectedAnswer == null

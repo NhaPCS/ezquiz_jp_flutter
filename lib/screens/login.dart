@@ -110,7 +110,7 @@ class _LoginState extends State<LoginScreen> {
                       ),
                       MaterialButton(
                         color: ColorUtil.primaryColor,
-                        padding: SizeUtil.defaultPaddig,
+                        padding: SizeUtil.defaultPadding,
                         child: SizedBox(
                           width: double.infinity,
                           child: Text(
@@ -132,7 +132,7 @@ class _LoginState extends State<LoginScreen> {
                       ),
                       MaterialButton(
                         color: ColorUtil.red,
-                        padding: SizeUtil.defaultPaddig,
+                        padding: SizeUtil.defaultPadding,
                         child: SizedBox(
                           width: double.infinity,
                           child: Text(

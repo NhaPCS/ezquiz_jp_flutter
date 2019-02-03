@@ -114,7 +114,7 @@ class _SignUpState extends State<SignUpScreen> {
                       ),
                       MaterialButton(
                         color: ColorUtil.primaryColor,
-                        padding: SizeUtil.defaultPaddig,
+                        padding: SizeUtil.defaultPadding,
                         child: SizedBox(
                           width: double.infinity,
                           child: Text(
