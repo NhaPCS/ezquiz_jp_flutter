@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:ezquiz_flutter/data/database.dart';
 import 'package:ezquiz_flutter/model/test.dart';
@@ -12,7 +14,8 @@ import 'package:ezquiz_flutter/data/response.dart';
 import 'package:ezquiz_flutter/data/shared_value.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:ezquiz_flutter/screens/payment.dart';
-import 'package:ezquiz_flutter/model/user.dart';
+import 'package:ezquiz_flutter/model/question.dart';
+import 'package:ezquiz_flutter/model/test_result.dart';
 
 Future<List<TestModel>> getListTest(Category category) async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
@@ -179,7 +182,7 @@ Future<void> getUserProfile() async {
     if (dataSnapshot.value != null && dataSnapshot.value["id"] != null) {
       print("Value user ${dataSnapshot.value}");
       ShareValueProvider.shareValueProvider.saveUserProfile(dataSnapshot.value);
-    } else{
+    } else {
       ShareValueProvider.shareValueProvider.saveUserProfile(null);
     }
   }
@@ -210,5 +213,78 @@ Future<BaseResponse> buyTest(BuildContext context, TestModel test) async {
     print("Request failed with status: ${response.statusCode}.");
     return BaseResponse(
         status: BaseResponse.ERROR_OTHER, message: "Error. Please try again!");
+  }
+}
+
+Future<TestResult> getTestResult(
+    TestModel test, List<Question> listQuestion, int testTime) async {
+  if (listQuestion == null || listQuestion.isEmpty) {
+    return null;
+  }
+  FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
+  if (firebaseUser == null) return null;
+  int correct = 0;
+  int total = 0;
+  for (Question question in listQuestion) {
+    total++;
+    if (question.isCorrect()) {
+      correct++;
+    }
+  }
+  double point = correct * (10.0 / total);
+  point = num.parse(point.toStringAsFixed(2));
+  TestResult testResult = TestResult(
+      user_id: firebaseUser.uid,
+      test_id: test.id,
+      test_name: test.testName,
+      total_point: point,
+      correct_count: correct,
+      wrong_count: (total - correct),
+      test_duration: testTime,
+      test_time: DateTime.now().millisecondsSinceEpoch);
+  String key =
+      FirebaseDatabase.instance.reference().child("test_result").push().key;
+  FirebaseDatabase.instance
+      .reference()
+      .child("test_result")
+      .child(key)
+      .set(testResult.toMap());
+  increaseTestDoneCount(test.id);
+  return testResult;
+}
+
+void increaseTestDoneCount(String testId) async {
+  FirebaseDatabase.instance
+      .reference()
+      .child("test")
+      .child(testId)
+      .child("test_done_count")
+      .runTransaction((MutableData mutableData) async {
+    mutableData.value = (mutableData.value ?? 0) + 1;
+    return mutableData;
+  });
+}
+
+Future<ResultStatisticResponse> getTestStatistic(
+    String testID, int correctCount) async {
+  FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
+  if (firebaseUser == null) return null;
+  var baseUrl = await ShareValueProvider.shareValueProvider.getAPIUrl();
+  print(baseUrl);
+  // Await the http get response, then decode the json-formatted responce.
+  var response = await http.post("${baseUrl}testResult", body: {
+    "test_id": testID,
+    "user_id": firebaseUser.uid,
+    "correct_count": correctCount.toString()
+  });
+  if (response.statusCode == 200) {
+    var jsonResponse = convert.jsonDecode(response.body);
+    print("STATISTIC $jsonResponse");
+    ResultStatisticResponse statisticResponse =
+        ResultStatisticResponse.fromJson(jsonResponse);
+    return statisticResponse;
+  } else {
+    print("Request failed with status: ${response.statusCode}.");
+    return null;
   }
 }

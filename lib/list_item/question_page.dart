@@ -4,22 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html_view/flutter_html_text.dart';
 
 class QuestionPage extends StatefulWidget {
-  final Question _question;
+  final Question question;
+  final VoidCallback selectedAnswerCallBack;
 
-  const QuestionPage(this._question);
+  const QuestionPage(this.question,  this.selectedAnswerCallBack);
 
   @override
   State<StatefulWidget> createState() {
-    return _QuestionPageState(_question);
+    return _QuestionPageState(question, selectedAnswerCallBack);
   }
 }
+
+typedef SelectedAnswerCallBack = void Function(int index);
 
 class _QuestionPageState extends State<QuestionPage>
     with AutomaticKeepAliveClientMixin<QuestionPage> {
   final Question _question;
+  final VoidCallback _selectedAnswerCallBack;
   String _radioGroup = "";
 
-  _QuestionPageState(this._question);
+  _QuestionPageState(this._question, this._selectedAnswerCallBack);
 
   @override
   void initState() {
@@ -30,7 +34,7 @@ class _QuestionPageState extends State<QuestionPage>
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.fromLTRB(10, 10, 10, 60),
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 15),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(SizeUtil.smallRadius),
       ),
@@ -85,6 +89,7 @@ class _QuestionPageState extends State<QuestionPage>
     setState(() {
       _radioGroup = answer;
     });
+    _selectedAnswerCallBack();
   }
 
   Widget getRadioRow(String answer) {

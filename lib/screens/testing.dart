@@ -6,6 +6,8 @@ import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:ezquiz_flutter/data/service.dart';
+import 'package:ezquiz_flutter/model/test_result.dart';
 
 class TestingScreen extends StatefulWidget {
   final TestModel _testModel;
@@ -71,7 +73,7 @@ class _TestingState extends State<TestingScreen>
                   ),
                 ),
                 onTap: () {
-                  _pageController.jumpToPage(_selectedIndex);
+                  _jumpPage(index);
                   Navigator.of(context).pop();
                 },
               );
@@ -121,18 +123,50 @@ class _TestingState extends State<TestingScreen>
                 ..addStatusListener((state) {
                   print("STATE $state");
                   if (state == AnimationStatus.completed) {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => TestResultScreen()));
+                    _getResult();
                   }
                 }),
         ),
-        body: PageView.builder(
-          controller: _pageController,
-          itemBuilder: (context, index) {
-            Question question = _listQuestion[index];
-            return QuestionPage(question);
-          },
-          itemCount: _listQuestion.length,
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (int page) {
+                  setState(() {
+                    _selectedIndex = page;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  Question question = _listQuestion[index];
+                  return QuestionPage(question, () {
+                    print("Click roi sao k hien?");
+                    if (index < _listQuestion.length - 1) {
+                      _jumpPage(index + 1);
+                    }
+                  });
+                },
+                itemCount: _listQuestion.length,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "${_selectedIndex + 1}",
+                  style: TextStyle(
+                      color: ColorUtil.primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: SizeUtil.textSizeHuge),
+                ),
+                Text(
+                  "/${_listQuestion.length}",
+                  style: TextStyle(color: ColorUtil.textGray, fontSize: 25),
+                )
+              ],
+            )
+          ],
         ));
   }
 
@@ -148,9 +182,8 @@ class _TestingState extends State<TestingScreen>
         list.add(new Question.fromJson(value));
       }
       setState(() {
-        _selectedIndex = 0;
         _listQuestion = list;
-        _pageController.jumpToPage(_selectedIndex);
+        _jumpPage(0);
         _animationController.forward(from: 0.0);
         print("QUESTION LIST $_listQuestion");
       });
@@ -187,10 +220,7 @@ class _TestingState extends State<TestingScreen>
                   padding: EdgeInsets.only(left: SizeUtil.spaceDefault),
                   child: WidgetUtil.getRoundedButton(context, "Submit", () {
                     Navigator.of(context).pop();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TestResultScreen()));
+                    _getResult();
                   }),
                 ))
               ],
@@ -202,6 +232,46 @@ class _TestingState extends State<TestingScreen>
         ),
       );
     });
+  }
+
+  void _getResult() async {
+    if (_animationController != null) _animationController.stop();
+    int testTime = _testModel.duration - _animationController.value.round();
+    TestResult testResult =
+        await getTestResult(_testModel, _listQuestion, testTime);
+    if (testResult != null) {
+      print("TEST RESULT ${testResult.total_point}");
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+              builder: (context) => TestResultScreen(testResult: testResult)))
+          .then((type) {
+        if (type != null) {
+          if (type == "again") {
+            _resetAnswers();
+            _jumpPage(0);
+          } else if (type == "answer") {}
+        }
+      });
+    }
+  }
+
+  void _jumpPage(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _pageController.animateToPage(_selectedIndex,
+          duration: Duration(milliseconds: 200), curve: Curves.ease);
+    });
+  }
+
+  Future<void> _resetAnswers() async {
+    for (Question question in _listQuestion) {
+      question.selectedAnswer = null;
+    }
+    setState(() {
+      _listQuestion = _listQuestion;
+      _animationController.reset();
+    });
+    return;
   }
 }
 
