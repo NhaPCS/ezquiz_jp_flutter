@@ -10,13 +10,14 @@ import 'package:ezquiz_flutter/data/service.dart';
 import 'package:ezquiz_flutter/model/test_result.dart';
 
 class TestingScreen extends StatefulWidget {
-  final TestModel _testModel;
+  final TestModel testModel;
+  final bool isViewAnswer;
 
-  TestingScreen(this._testModel);
+  TestingScreen(this.testModel, this.isViewAnswer);
 
   @override
   State<StatefulWidget> createState() {
-    return _TestingState(_testModel);
+    return _TestingState(testModel, isViewAnswer);
   }
 }
 
@@ -28,8 +29,10 @@ class _TestingState extends State<TestingScreen>
   PageController _pageController;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
+  bool _isViewAnswer = false;
+  bool _finished = false;
 
-  _TestingState(this._testModel);
+  _TestingState(this._testModel, this._isViewAnswer);
 
   @override
   void initState() {
@@ -61,6 +64,7 @@ class _TestingState extends State<TestingScreen>
                 child: Container(
                   padding: SizeUtil.defaultPadding,
                   child: ListTile(
+                    contentPadding: EdgeInsets.all(0),
                     leading: Text(
                       _listQuestion[index].selectedAnswer == null
                           ? ""
@@ -69,7 +73,12 @@ class _TestingState extends State<TestingScreen>
                           color: ColorUtil.primaryColor,
                           fontWeight: FontWeight.bold),
                     ),
-                    title: Text("Question number ${index + 1}"),
+                    title: Text(
+                      "Question number ${index + 1}",
+                      style: TextStyle(
+                          color: getAnswerColor(_listQuestion[index])),
+                    ),
+                    trailing: getAnswerIcon(_listQuestion[index]),
                   ),
                 ),
                 onTap: () {
@@ -97,9 +106,13 @@ class _TestingState extends State<TestingScreen>
           ),
           actions: <Widget>[
             GestureDetector(
-              child: WidgetUtil.getPrimaryIcon(context, Icons.cloud_done),
+              child: Icon(
+                Icons.cloud_done,
+                color: _isViewAnswer ? Colors.grey : ColorUtil.primaryColor,
+                size: SizeUtil.iconSize,
+              ),
               onTap: () {
-                showSubmitDialog();
+                if (!_isViewAnswer) showSubmitDialog();
               },
             ),
             Container(
@@ -122,9 +135,10 @@ class _TestingState extends State<TestingScreen>
               .animate(_animationController)
                 ..addStatusListener((state) {
                   print("STATE $state");
-                  if (state == AnimationStatus.completed) {
+                  if (!_finished && state == AnimationStatus.completed) {
                     _getResult();
                   }
+                  _finished = true;
                 }),
         ),
         body: Column(
@@ -143,8 +157,10 @@ class _TestingState extends State<TestingScreen>
                     print("Click roi sao k hien?");
                     if (index < _listQuestion.length - 1) {
                       _jumpPage(index + 1);
+                    } else {
+                      showSubmitDialog();
                     }
-                  });
+                  }, _isViewAnswer);
                 },
                 itemCount: _listQuestion.length,
               ),
@@ -170,6 +186,40 @@ class _TestingState extends State<TestingScreen>
         ));
   }
 
+  Color getAnswerColor(Question question) {
+    if (!_isViewAnswer || question.answer == null) return ColorUtil.textColor;
+    if (question.selectedAnswer != null) {
+      if (question.answer.toLowerCase() ==
+          question.selectedAnswer.toLowerCase())
+        return Colors.green;
+      else {
+        return Colors.red;
+      }
+    }
+    return ColorUtil.textColor;
+  }
+
+  Widget getAnswerIcon(Question question) {
+    if (!_isViewAnswer || question.answer == null)
+      return Container(
+        width: 0,
+      );
+    if (question.selectedAnswer != null) {
+      if (question.answer.toLowerCase() ==
+          question.selectedAnswer.toLowerCase())
+        return Icon(Icons.done, color: Colors.green);
+      else {
+        return Icon(
+          Icons.close,
+          color: Colors.red,
+        );
+      }
+    }
+    return Container(
+      width: 0,
+    );
+  }
+
   void getListQuestion() {
     FirebaseDatabase.instance
         .reference()
@@ -184,7 +234,7 @@ class _TestingState extends State<TestingScreen>
       setState(() {
         _listQuestion = list;
         _jumpPage(0);
-        _animationController.forward(from: 0.0);
+        if (!_isViewAnswer) _animationController.forward(from: 0.0);
         print("QUESTION LIST $_listQuestion");
       });
     });
@@ -247,9 +297,15 @@ class _TestingState extends State<TestingScreen>
           .then((type) {
         if (type != null) {
           if (type == "again") {
+            _finished = false;
             _resetAnswers();
             _jumpPage(0);
-          } else if (type == "answer") {}
+          } else if (type == "answer") {
+            setState(() {
+              _isViewAnswer = true;
+              _jumpPage(0);
+            });
+          }
         }
       });
     }
@@ -270,6 +326,7 @@ class _TestingState extends State<TestingScreen>
     setState(() {
       _listQuestion = _listQuestion;
       _animationController.reset();
+      _animationController.forward(from: 0.0);
     });
     return;
   }

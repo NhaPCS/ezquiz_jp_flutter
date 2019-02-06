@@ -228,9 +228,12 @@ class _PaymentState extends State<PaymentScreen>
         });
       }
     };
-    RewardedVideoAd.instance.load(
-        adUnitId: Constant.ADS_REWARD_ID,
-        targetingInfo: MobileAdTargetingInfo());
+    String adUnit = Platform.isIOS
+        ? Constant.ADS_REWARD_ID_IOS
+        : Constant.ADS_REWARD_ID_ANDROID;
+    print("ADS $adUnit");
+    RewardedVideoAd.instance
+        .load(adUnitId: adUnit, targetingInfo: MobileAdTargetingInfo());
   }
 
   Future<Null> _getProduct() async {
@@ -250,7 +253,7 @@ class _PaymentState extends State<PaymentScreen>
 //    });
   }
 
-  Future<List<String>> _getSkus() async{
+  Future<List<String>> _getSkus() async {
     List<String> list = List();
     for (Coin coin in _listCoins) {
       list.add(coin.id);

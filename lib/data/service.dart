@@ -288,3 +288,31 @@ Future<ResultStatisticResponse> getTestStatistic(
     return null;
   }
 }
+
+Future<List<TestResult>> getTestHistory() async {
+  FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
+  if (firebaseUser == null) return null;
+  List<TestResult> list = List();
+  DataSnapshot snapshot = await FirebaseDatabase.instance
+      .reference()
+      .child("test_result")
+      .orderByChild("user_id")
+      .equalTo(firebaseUser.uid)
+      .once();
+  Map<dynamic, dynamic> values = snapshot.value;
+  values.forEach((id, value) {
+    print("payment $value");
+    TestResult testResult = TestResult.fromMap(value);
+    list.add(testResult);
+  });
+  return list;
+}
+
+Future<TestModel> getTestModel(String testId) async {
+  DataSnapshot snapshot = await FirebaseDatabase.instance
+      .reference()
+      .child("test")
+      .child(testId)
+      .once();
+  return TestModel.fromMap(snapshot.value);
+}

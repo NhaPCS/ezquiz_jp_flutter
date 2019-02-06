@@ -202,7 +202,7 @@ class _ListTestState extends State<ListTest>
         if (test.coin != null && test.coin > 0) if (test.isBought != null &&
             !test.isBought) {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TestingScreen(test)));
+              MaterialPageRoute(builder: (context) => TestingScreen(test, false)));
         } else {
           WidgetUtil.showBuyTestDialog(widget, context, test, () {
             Navigator.pop(context);
@@ -213,7 +213,7 @@ class _ListTestState extends State<ListTest>
         }
         else {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TestingScreen(test)));
+              MaterialPageRoute(builder: (context) => TestingScreen(test, false)));
         }
       } else {
         WidgetUtil.showLoginDialog(context);
@@ -225,7 +225,7 @@ class _ListTestState extends State<ListTest>
     if (baseResponse.isSuccess()) {
       test.isBought = true;
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => TestingScreen(test)));
+          MaterialPageRoute(builder: (context) => TestingScreen(test, false)));
     } else {
       if (baseResponse.status == BaseResponse.ERROR_OUT_BALANCE) {
         WidgetUtil.showAlertDialog(

@@ -1,5 +1,6 @@
+import 'package:ezquiz_flutter/data/service.dart';
 import 'package:ezquiz_flutter/list_item/history_test_item.dart';
-import 'package:ezquiz_flutter/model/history.dart';
+import 'package:ezquiz_flutter/model/test_result.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryState extends State<HistoryScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final List<History> _listHistory = List();
+  List<TestResult> _listHistory = List();
   String _selectedType;
   Map<String, String> _mapTypes;
 
@@ -24,6 +25,7 @@ class _HistoryState extends State<HistoryScreen> {
     _mapTypes["normal"] = "Normal";
     _mapTypes["too_bad"] = "Too bad";
     _selectedType = _mapTypes["all"];
+    _getListHistory();
     super.initState();
   }
 
@@ -47,10 +49,12 @@ class _HistoryState extends State<HistoryScreen> {
         actions: <Widget>[getSubjectPopupWidget()],
       ),
       body: ListView.builder(
-          itemCount: 100,
+          itemCount: _listHistory == null ? 0 : _listHistory.length,
           itemBuilder: (context, index) {
             // History history = _listHistory[index];
-            return HistoryItem();
+            return HistoryItem(
+              testResult: _listHistory[index],
+            );
           }),
     );
   }
@@ -81,5 +85,13 @@ class _HistoryState extends State<HistoryScreen> {
           }).toList();
         },
         onSelected: (String value) {});
+  }
+
+  void _getListHistory() {
+    getTestHistory().then((List<TestResult> list) {
+      setState(() {
+        _listHistory = list;
+      });
+    });
   }
 }

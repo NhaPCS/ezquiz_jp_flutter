@@ -3,9 +3,11 @@ import 'package:ezquiz_flutter/data/shared_value.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'dart:async';
+import 'dart:io';
 
-void main() =>
-    runApp(MaterialApp(
+void main() => runApp(MaterialApp(
       home: MyApp(),
       theme: ThemeData(
           fontFamily: 'base',
@@ -41,6 +43,10 @@ class _MyAppState extends State<MyApp> {
     getAPIUrl();
     getUserProfile();
     super.initState();
+    FirebaseAdMob.instance.initialize(
+        appId: Platform.isIOS
+            ? Constant.ADS_APP_ID_IOS
+            : Constant.ADS_APP_ID_ANDROID);
     FirebaseDatabase.instance.setPersistenceEnabled(true);
     FirebaseDatabase.instance.setPersistenceCacheSizeBytes(10000000);
   }
@@ -73,5 +79,4 @@ class _MyAppState extends State<MyApp> {
           await ShareValueProvider.shareValueProvider.getCurrentLevel());
     });
   }
-
 }

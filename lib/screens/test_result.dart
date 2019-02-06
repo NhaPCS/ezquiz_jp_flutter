@@ -10,8 +10,7 @@ import 'package:ezquiz_flutter/screens/testing.dart';
 class TestResultScreen extends StatefulWidget {
   final TestResult testResult;
 
-  const TestResultScreen({Key key, this.testResult})
-      : super(key: key);
+  const TestResultScreen({Key key, this.testResult}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -77,12 +76,7 @@ class _TestResultState extends State<TestResultScreen> {
                 style: TextStyle(
                     fontSize: SizeUtil.textSizeBig, color: Colors.white),
               ),
-              AnimatedCircularChart(
-                key: _chartKey,
-                size: Size(280, 280),
-                initialChartData: data,
-                chartType: CircularChartType.Pie,
-              ),
+              _getChartView(),
               ListTile(
                 title: Text(
                   "You got ${_testResult.correct_count} correct answers.",
@@ -126,7 +120,9 @@ class _TestResultState extends State<TestResultScreen> {
               WidgetUtil.getRoundedButtonWhite(context, "Do it again", () {
                 Navigator.of(context).pop("again");
               }),
-              WidgetUtil.getRoundedButtonWhite(context, "View answer", () {}),
+              WidgetUtil.getRoundedButtonWhite(context, "View answer", () {
+                Navigator.of(context).pop("answer");
+              }),
               WidgetUtil.getRoundedButtonWhite(context, "Come back", () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
@@ -177,15 +173,53 @@ class _TestResultState extends State<TestResultScreen> {
     return duration == 0 ? 1 : duration;
   }
 
-  List<CircularStackEntry> data = <CircularStackEntry>[
-    new CircularStackEntry(
-      <CircularSegmentEntry>[
-        new CircularSegmentEntry(500.0, Colors.red[200], rankKey: 'Q1'),
-        new CircularSegmentEntry(1000.0, Colors.green[200], rankKey: 'Q2'),
-        new CircularSegmentEntry(2000.0, Colors.blue[200], rankKey: 'Q3'),
-        new CircularSegmentEntry(1000.0, Colors.yellow[200], rankKey: 'Q4'),
-      ],
-      rankKey: 'Quarterly Profits',
-    ),
-  ];
+  List<CircularStackEntry> _getChartData() {
+    List<CircularStackEntry> list = List();
+    List<CircularSegmentEntry> listSegment = List();
+    if (_resultStatisticResponse == null) return list;
+    listSegment.add(new CircularSegmentEntry(
+        (_resultStatisticResponse.user_equal_count).toDouble(),
+        Colors.yellow[200],
+        rankKey: 'Q1'));
+    listSegment.add(new CircularSegmentEntry(
+        (_resultStatisticResponse.user_worse_count).toDouble(), Colors.red[200],
+        rankKey: 'Q2'));
+    listSegment.add(new CircularSegmentEntry(
+        (_resultStatisticResponse.user_better_count).toDouble(),
+        Colors.blue[200],
+        rankKey: 'Q3'));
+    list.add(new CircularStackEntry(listSegment));
+    return list;
+  }
+
+  Widget _getChartView() {
+    if (_resultStatisticResponse == null) {
+      return Container(
+        padding: SizeUtil.bigMargin,
+        child: Text(
+          "Waiting for response...",
+          style: TextStyle(color: Colors.grey),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+    if ((_resultStatisticResponse.user_better_count == 0 &&
+        _resultStatisticResponse.user_worse_count == 0 &&
+        _resultStatisticResponse.user_equal_count == 0)) {
+      return Container(
+        padding: SizeUtil.bigMargin,
+        child: Text(
+          "Sorry! No data for the chart...",
+          style: TextStyle(color: Colors.grey),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+    return AnimatedCircularChart(
+      key: _chartKey,
+      size: Size(280, 280),
+      initialChartData: _getChartData(),
+      chartType: CircularChartType.Pie,
+    );
+  }
 }

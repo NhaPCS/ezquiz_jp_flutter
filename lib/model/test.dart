@@ -59,7 +59,7 @@ class TestModel {
     return map;
   }
 
-  TestModel.fromMap(Map<String, dynamic> map) {
+  TestModel.fromMap(Map<dynamic, dynamic> map) {
     id = map[_id];
     testName = map[_testName];
     comment = map[_comment];

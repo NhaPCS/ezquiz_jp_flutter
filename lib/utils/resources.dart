@@ -9,6 +9,7 @@ import 'package:ezquiz_flutter/list_item/new_test_list.dart';
 
 class SizeUtil {
   static const EdgeInsets defaultMargin = EdgeInsets.all(20);
+  static const EdgeInsets bigMargin = EdgeInsets.all(40);
   static const EdgeInsets defaultPadding = EdgeInsets.all(15);
   static const EdgeInsets smallPadding = EdgeInsets.all(8);
   static const EdgeInsets tinyPadding = EdgeInsets.all(5);
@@ -21,8 +22,10 @@ class SizeUtil {
 
   static const double textSizeDefault = 18;
   static const double textSizeSmall = 13;
+  static const double textSizeTiny = 10;
   static const double textSizeBig = 35;
   static const double textSizeHuge = 50;
+  static const double textSizeSuperHuge = 70;
 
   static const double elevationDefault = 3;
   static const double elevationBig = 6;
@@ -39,7 +42,10 @@ class SizeUtil {
 }
 
 class Constant {
-  static const String ADS_REWARD_ID = "ca-app-pub-9000513260892268/3210837108";
+  static const String ADS_REWARD_ID_IOS = "ca-app-pub-9000513260892268/3210837108";
+  static const String ADS_REWARD_ID_ANDROID = "ca-app-pub-9000513260892268/8052766522";
+  static const String ADS_APP_ID_IOS = "ca-app-pub-9000513260892268~3215416978";
+  static const String ADS_APP_ID_ANDROID = "ca-app-pub-9000513260892268~5481777220";
 }
 
 class WidgetUtil {
@@ -179,6 +185,17 @@ class WidgetUtil {
         });
   }
 
+  static showLoading(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Dialog(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
   static showAlertDialog(BuildContext context, String title, String message,
       String positive, VoidCallback positiveClick) {
     showDialog(
@@ -205,8 +222,8 @@ class WidgetUtil {
         });
   }
 
-  static showBuyTestDialog(
-      ListTest listTest, BuildContext context, TestModel test, VoidCallback onBuyCallback) {
+  static showBuyTestDialog(ListTest listTest, BuildContext context,
+      TestModel test, VoidCallback onBuyCallback) {
     showDialog(
         context: context,
         builder: (BuildContext contextBuilder) {
