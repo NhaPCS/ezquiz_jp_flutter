@@ -25,7 +25,7 @@ class SizeUtil {
   static const double textSizeTiny = 10;
   static const double textSizeBig = 35;
   static const double textSizeHuge = 50;
-  static const double textSizeSuperHuge = 70;
+  static const double textSizeSuperHuge = 90;
 
   static const double elevationDefault = 3;
   static const double elevationBig = 6;
@@ -44,8 +44,11 @@ class SizeUtil {
 class Constant {
   static const String ADS_REWARD_ID_IOS = "ca-app-pub-9000513260892268/3210837108";
   static const String ADS_REWARD_ID_ANDROID = "ca-app-pub-9000513260892268/8052766522";
+  static const String ADS_INTERSTITIAL_ID_IOS = "ca-app-pub-9000513260892268/2448099949";
+  static const String ADS_INTERSTITIAL_ID_ANDROID = "ca-app-pub-9000513260892268/4953229385";
   static const String ADS_APP_ID_IOS = "ca-app-pub-9000513260892268~3215416978";
   static const String ADS_APP_ID_ANDROID = "ca-app-pub-9000513260892268~5481777220";
+
 }
 
 class WidgetUtil {
@@ -222,7 +225,7 @@ class WidgetUtil {
         });
   }
 
-  static showBuyTestDialog(ListTest listTest, BuildContext context,
+  static showBuyTestDialog(BuildContext context,
       TestModel test, VoidCallback onBuyCallback) {
     showDialog(
         context: context,

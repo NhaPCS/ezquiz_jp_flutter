@@ -1,21 +1,23 @@
 import 'dart:async';
-
-import 'package:firebase_database/firebase_database.dart';
-import 'package:ezquiz_flutter/data/database.dart';
-import 'package:ezquiz_flutter/model/test.dart';
-import 'package:ezquiz_flutter/model/category.dart';
-import 'package:ezquiz_flutter/screens/home.dart';
-import 'package:flutter/material.dart';
-import 'package:ezquiz_flutter/model/coin.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'dart:io' show Platform;
+
+import 'package:ezquiz_flutter/data/database.dart';
 import 'package:ezquiz_flutter/data/response.dart';
 import 'package:ezquiz_flutter/data/shared_value.dart';
-import 'package:ezquiz_flutter/utils/resources.dart';
-import 'package:ezquiz_flutter/screens/payment.dart';
+import 'package:ezquiz_flutter/model/category.dart';
+import 'package:ezquiz_flutter/model/coin.dart';
+import 'package:ezquiz_flutter/model/device_token.dart';
 import 'package:ezquiz_flutter/model/question.dart';
+import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/model/test_result.dart';
+import 'package:ezquiz_flutter/model/user.dart';
+import 'package:ezquiz_flutter/screens/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:package_info/package_info.dart';
 
 Future<List<TestModel>> getListTest(Category category) async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
@@ -26,9 +28,13 @@ Future<List<TestModel>> getListTest(Category category) async {
       .once();
   List<TestModel> list = List();
   for (var value in dataSnapshot.value.values) {
-    list.add(new TestModel.fromJson(value));
+    TestModel testModel = TestModel.fromJson(value);
+    list.add(testModel);
+    if (testModel != null) {
+      DBProvider.db.insertTest(testModel);
+    }
   }
-  return list;
+  return await DBProvider.db.getTestByCate(category.id);
 }
 
 Future<bool> getListLevels() async {
@@ -41,7 +47,7 @@ Future<bool> getListLevels() async {
     cate.forEach((cateId, cateValue) {
       Category category =
           new Category(title: cateValue, id: cateId, levelId: id);
-      DBProvider.db.insert(category);
+      DBProvider.db.insertCategory(category);
     });
   });
   return true;
@@ -52,34 +58,12 @@ void changeLevel(BuildContext context, String level) async {
   int _totalSize = categories.length;
   int _index = 0;
   categories.forEach((Category category) async {
-    List<TestModel> listTest = await getListTest(category);
-    print(
-        "CATEGORY_INFO ${category.title} list: ${listTest == null ? 0 : listTest.length}");
-    category.lisTest = listTest;
-    print("print here ${category.lisTest}");
+    await getListTest(category);
     _index++;
     if (_index == _totalSize) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => HomeScreen(categories)));
       print("print here push new screen");
-    }
-  });
-}
-
-Future<List<Category>> changeLevelFuture(
-    BuildContext context, String level) async {
-  List<Category> categories = await DBProvider.db.getCategoriesByLevel(level);
-  int _totalSize = categories.length;
-  int _index = 0;
-  categories.forEach((Category category) async {
-    List<TestModel> listTest = await getListTest(category);
-    print(
-        "CATEGORY_INFO ${category.title} list: ${listTest == null ? 0 : listTest.length}");
-    category.lisTest = listTest;
-    print("print here ${category.lisTest}");
-    _index++;
-    if (_index == _totalSize) {
-      return categories;
     }
   });
 }
@@ -174,6 +158,8 @@ Future<bool> createUser(String email, String pass) async {
 Future<void> getUserProfile() async {
   FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
   if (firebaseUser != null) {
+    await saveUserIfNeed(
+        firebaseUser.uid, firebaseUser.email, firebaseUser.displayName);
     DataSnapshot dataSnapshot = await FirebaseDatabase.instance
         .reference()
         .child("user")
@@ -315,4 +301,55 @@ Future<TestModel> getTestModel(String testId) async {
       .child(testId)
       .once();
   return TestModel.fromMap(snapshot.value);
+}
+
+Future<User> saveUserIfNeed(String uid, String email, String name) async {
+  DataSnapshot snapshot = await FirebaseDatabase.instance
+      .reference()
+      .child("user")
+      .child(uid)
+      .once();
+  String messagingToken =
+      await ShareValueProvider.shareValueProvider.getDeviceToken();
+  String platform = Platform.isIOS ? "ios" : "android";
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  DeviceToken deviceToken = DeviceToken(platform, packageInfo.version);
+  print("AAAA $deviceToken");
+  if (snapshot == null || snapshot.value == null) {
+    User user = User(
+        id: uid,
+        email: email,
+        display_name: name,
+        level_id: "n5",
+        coin: 0,
+        deviceID: {
+          messagingToken: deviceToken,
+        });
+
+    FirebaseDatabase.instance
+        .reference()
+        .child("user")
+        .child(uid)
+        .set(user.toMap());
+    FirebaseDatabase.instance
+        .reference()
+        .child("user")
+        .child(uid)
+        .child("deviceID")
+        .child(messagingToken)
+        .set(deviceToken.toMap());
+    ShareValueProvider.shareValueProvider.saveUserProfile(user.toJson());
+    return user;
+  } else {
+    FirebaseDatabase.instance
+        .reference()
+        .child("user")
+        .child(uid)
+        .child("deviceID")
+        .child(messagingToken)
+        .set(deviceToken.toMap());
+    User user = User.fromMap(snapshot.value);
+    ShareValueProvider.shareValueProvider.saveUserProfile(user.toJson());
+    return user;
+  }
 }

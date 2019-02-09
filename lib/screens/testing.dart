@@ -169,17 +169,89 @@ class _TestingState extends State<TestingScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  "${_selectedIndex + 1}",
-                  style: TextStyle(
-                      color: ColorUtil.primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: SizeUtil.textSizeHuge),
+                Visibility(
+                  visible: _selectedIndex > 0,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: GestureDetector(
+                    child: Wrap(
+                      children: <Widget>[
+                        Container(
+                          width: SizeUtil.spaceSmall,
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_left,
+                          color: ColorUtil.textGray,
+                        ),
+                        Text(
+                          "Pre",
+                          style: TextStyle(color: ColorUtil.textGray),
+                        )
+                      ],
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: SizeUtil.spaceSmall,
+                    ),
+                    onTap: () {
+                      if (_selectedIndex > 0) {
+                        setState(() {
+                          _selectedIndex--;
+                          _jumpPage(_selectedIndex);
+                        });
+                      }
+                    },
+                  ),
                 ),
-                Text(
-                  "/${_listQuestion.length}",
-                  style: TextStyle(color: ColorUtil.textGray, fontSize: 25),
-                )
+                Expanded(
+                  child: Text(
+                    "${_selectedIndex + 1}",
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                        color: ColorUtil.primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeUtil.textSizeHuge),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    "/${_listQuestion.length}",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: ColorUtil.textGray, fontSize: 25),
+                  ),
+                ),
+                Visibility(
+                  visible: _selectedIndex < _listQuestion.length - 1,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: GestureDetector(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Next",
+                          style: TextStyle(color: ColorUtil.textGray),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_right,
+                          color: ColorUtil.textGray,
+                        ),
+                        Container(
+                          width: SizeUtil.spaceSmall,
+                        )
+                      ],
+                      spacing: SizeUtil.spaceSmall,
+                    ),
+                    onTap: () {
+                      if (_selectedIndex < _listQuestion.length - 1) {
+                        setState(() {
+                          _selectedIndex++;
+                          _jumpPage(_selectedIndex);
+                        });
+                      }
+                    },
+                  ),
+                ),
               ],
             )
           ],
@@ -229,7 +301,7 @@ class _TestingState extends State<TestingScreen>
         .then((DataSnapshot dataSnapshot) {
       List<Question> list = List();
       for (var value in dataSnapshot.value) {
-        list.add(new Question.fromJson(value));
+        list.add(new Question.fromMap(value));
       }
       setState(() {
         _listQuestion = list;

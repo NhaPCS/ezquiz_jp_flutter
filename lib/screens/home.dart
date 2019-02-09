@@ -1,14 +1,17 @@
-import 'package:ezquiz_flutter/list_item/new_test_list.dart';
-import 'package:ezquiz_flutter/model/category.dart';
 import 'package:ezquiz_flutter/data/database.dart';
+import 'package:ezquiz_flutter/data/service.dart';
+import 'package:ezquiz_flutter/data/shared_value.dart';
+import 'package:ezquiz_flutter/list_item/new_test_list.dart';
+import 'package:ezquiz_flutter/list_item/profile_header.dart';
+import 'package:ezquiz_flutter/model/category.dart';
+import 'package:ezquiz_flutter/screens/history.dart';
+import 'package:ezquiz_flutter/screens/payment.dart';
+import 'package:ezquiz_flutter/screens/profile.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
-import 'package:ezquiz_flutter/data/shared_value.dart';
-import 'package:ezquiz_flutter/screens/history.dart';
-import 'package:ezquiz_flutter/data/service.dart';
-import 'package:ezquiz_flutter/screens/profile.dart';
-import 'package:ezquiz_flutter/screens/payment.dart';
-import 'package:ezquiz_flutter/list_item/profile_header.dart';
+import 'package:ezquiz_flutter/screens/search.dart';
+
+enum FilterType { most_rate, free, hasFee, most_done, none }
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -29,6 +32,7 @@ class _HomeState extends State<HomeScreen>
   TabController _tabController;
   List<String> _levels = List();
   String _selectedLevel;
+  FilterType _filterType = FilterType.none;
 
   _HomeState(this._listCategories);
 
@@ -72,6 +76,7 @@ class _HomeState extends State<HomeScreen>
           children: _listCategories.map<Widget>((Category _category) {
             return ListTest(
               category: _category,
+              filterType: _filterType,
             );
           }).toList()),
     );
@@ -85,18 +90,49 @@ class _HomeState extends State<HomeScreen>
         return new SizedBox(
           width: double.infinity,
           child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: ColorUtil.primaryColor)),
-            padding: SizeUtil.defaultPadding,
+            color: ColorUtil.primaryColor,
+            padding: EdgeInsets.only(
+                left: SizeUtil.spaceDefault,
+                right: SizeUtil.spaceDefault,
+                top: SizeUtil.spaceBig,
+                bottom: SizeUtil.spaceBig),
             child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
               spacing: SizeUtil.spaceDefault,
               children: <Widget>[
-                WidgetUtil.getRoundedButton(context, "Most test rating", () {}),
-                WidgetUtil.getRoundedButton(context, "Free", () {}),
-                WidgetUtil.getRoundedButton(context, "Has fee", () {}),
-                WidgetUtil.getRoundedButton(
-                    context, "Best testing time", () {}),
-                WidgetUtil.getRoundedButton(context, "Clear filter", () {}),
+                WidgetUtil.getRoundedButtonWhite(context, "Most rating count",
+                    () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _filterType = FilterType.most_rate;
+                  });
+                }),
+                WidgetUtil.getRoundedButtonWhite(context, "Free", () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _filterType = FilterType.free;
+                  });
+                }),
+                WidgetUtil.getRoundedButtonWhite(context, "Has fee", () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _filterType = FilterType.hasFee;
+                  });
+                }),
+                WidgetUtil.getRoundedButtonWhite(context, "Most done count",
+                    () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _filterType = FilterType.most_done;
+                  });
+                }),
+                WidgetUtil.getRoundedButtonWhite(context, "Clear filter", () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _filterType = FilterType.none;
+                  });
+                }),
               ],
             ),
           ),
@@ -120,11 +156,19 @@ class _HomeState extends State<HomeScreen>
                       color: Colors.white.withAlpha(60),
                     ),
                     Expanded(
-                      child: Text(
-                        "Enter the keyword...",
-                        style: TextStyle(
-                            color: Colors.white.withAlpha(60),
-                            fontSize: SizeUtil.textSizeDefault),
+                      child: GestureDetector(
+                        child: Text(
+                          "Enter anything you want to find...",
+                          style: TextStyle(
+                              color: Colors.white.withAlpha(60),
+                              fontSize: SizeUtil.textSizeDefault),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SearchScreen()));
+                        },
                       ),
                     ),
                   ],
@@ -139,6 +183,7 @@ class _HomeState extends State<HomeScreen>
         ),
         bottom: TabBar(
             controller: _tabController,
+            indicatorColor: Colors.white,
             isScrollable: true,
             tabs: _listCategories.map<Tab>((Category _category) {
               return Tab(
@@ -166,8 +211,7 @@ class _HomeState extends State<HomeScreen>
           }).toList();
         },
         onSelected: (String value) {
-          ShareValueProvider.shareValueProvider
-              .saveCurrentLevel(value);
+          ShareValueProvider.shareValueProvider.saveCurrentLevel(value);
           setState(() {
             _selectedLevel = value;
             changeLevel(context, _selectedLevel);
@@ -194,20 +238,36 @@ class _HomeState extends State<HomeScreen>
   Widget getMenuItem(Menu menu, int index) {
     return ListTile(
       onTap: () {
-        switch(index) {
+        switch (index) {
           case 1:
             break;
           case 2:
             Navigator.of(context).pop();
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => HistoryScreen()));
             break;
           case 3:
             Navigator.of(context).pop();
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()));
             break;
           case 4:
             Navigator.of(context).pop();
-            Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PaymentScreen()));
+            break;
+          case 6:
+          case 7:
+            break;
+          case 4:
+            Navigator.of(context).pop();
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PaymentScreen()));
+            break;
+          case 4:
+            Navigator.of(context).pop();
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PaymentScreen()));
             break;
         }
       },

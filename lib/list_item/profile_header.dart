@@ -3,6 +3,7 @@ import 'package:ezquiz_flutter/model/user.dart';
 import 'package:ezquiz_flutter/data/shared_value.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:ezquiz_flutter/screens/login.dart';
+import 'package:ezquiz_flutter/screens/profile.dart';
 
 class ProfileHeader extends StatefulWidget {
   @override
@@ -27,40 +28,50 @@ class _ProfileState extends State<ProfileHeader> {
   @override
   Widget build(BuildContext context) {
     if (_user != null) {
-      return Container(
-        padding: SizeUtil.defaultMargin,
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          children: <Widget>[
-            WidgetUtil.getCircleImage(SizeUtil.avatarSize, _user.avatar_url),
-            Container(
-              width: SizeUtil.spaceBig,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    _user.display_name == null
-                        ? _user.email
-                        : _user.display_name,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  Container(
-                    height: SizeUtil.spaceDefault,
-                  ),
-                  Text(
-                    "${_user.coin} coin",
-                    style: TextStyle(
-                        color: Colors.orange, fontWeight: FontWeight.bold),
-                  )
-                ],
+      return GestureDetector(
+        child: Container(
+          padding: SizeUtil.defaultMargin,
+          color: Theme.of(context).primaryColor,
+          child: Row(
+            children: <Widget>[
+              Image.asset(
+                "icons/logo.png",
+                width: SizeUtil.avatarSize,
+                height: SizeUtil.avatarSize,
               ),
-            )
-          ],
+              Container(
+                width: SizeUtil.spaceBig,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      _user.display_name == null
+                          ? _user.email
+                          : _user.display_name,
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    Container(
+                      height: SizeUtil.spaceDefault,
+                    ),
+                    Text(
+                      "${_user.coin} coin",
+                      style: TextStyle(
+                          color: Colors.orange, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
+        onTap: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => ProfileScreen()));
+        },
       );
     } else {
       return Container(

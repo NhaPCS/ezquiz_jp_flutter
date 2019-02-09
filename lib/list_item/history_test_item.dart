@@ -55,19 +55,14 @@ class _HistoryItem extends State<HistoryItem> {
                   decoration: BoxDecoration(
                       color: ColorUtil.primaryColor, shape: BoxShape.circle),
                 ),
-                Container(
-                  height: SizeUtil.spaceDefault,
-                ),
                 Text(
                   _testResult.total_point == null
                       ? ""
                       : "${_testResult.total_point}",
                   style: TextStyle(
+                      fontFamily: "trattello",
                       color: _testResult.getColor(),
                       fontSize: SizeUtil.textSizeBig),
-                ),
-                Container(
-                  height: SizeUtil.spaceDefault,
                 ),
                 Container(
                   width: 5,
@@ -175,6 +170,7 @@ class _HistoryItem extends State<HistoryItem> {
                   Text(
                     "${_testResult.total_point}",
                     style: TextStyle(
+                        fontFamily: "trattello",
                         fontSize: SizeUtil.textSizeSuperHuge,
                         fontWeight: FontWeight.bold,
                         color: _testResult.getColor()),

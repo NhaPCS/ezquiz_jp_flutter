@@ -6,6 +6,9 @@ import 'package:ezquiz_flutter/data/response.dart';
 import 'package:ezquiz_flutter/data/service.dart';
 import 'package:ezquiz_flutter/model/test.dart';
 import 'package:ezquiz_flutter/screens/testing.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'dart:async';
+import 'dart:io';
 
 class TestResultScreen extends StatefulWidget {
   final TestResult testResult;
@@ -24,11 +27,40 @@ class _TestResultState extends State<TestResultScreen> {
 
   final TestResult _testResult;
   ResultStatisticResponse _resultStatisticResponse;
+  InterstitialAd _interstitialAd;
 
   _TestResultState(this._testResult);
 
+  InterstitialAd createInterstitialAd() {
+    return InterstitialAd(
+      adUnitId: Constant.ADS_INTERSTITIAL_ID_IOS,
+      listener: (MobileAdEvent event) {
+        print("InterstitialAd event $event");
+        if (event == MobileAdEvent.loaded) {
+          _interstitialAd?.show();
+        } else if (event == MobileAdEvent.failedToLoad) {
+          RewardedVideoAd.instance.show();
+        }
+      },
+    );
+  }
+
+  void _loadRewardAds() {
+    RewardedVideoAd.instance.listener =
+        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+      print("RewardedVideoAd event $event");
+    };
+    String adUnit = Platform.isIOS
+        ? Constant.ADS_REWARD_ID_IOS
+        : Constant.ADS_REWARD_ID_ANDROID;
+    print("ADS $adUnit");
+    RewardedVideoAd.instance
+        .load(adUnitId: adUnit, targetingInfo: MobileAdTargetingInfo());
+  }
+
   @override
   void initState() {
+    _loadRewardAds();
     getTestStatistic(_testResult.test_id, _testResult.correct_count)
         .then((ResultStatisticResponse response) {
       setState(() {
@@ -36,6 +68,14 @@ class _TestResultState extends State<TestResultScreen> {
       });
     });
     super.initState();
+    _interstitialAd?.dispose();
+    _interstitialAd = createInterstitialAd()..load();
+  }
+
+  @override
+  void dispose() {
+    _interstitialAd?.dispose();
+    super.dispose();
   }
 
   @override

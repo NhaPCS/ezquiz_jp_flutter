@@ -1,4 +1,5 @@
 import 'package:ezquiz_flutter/model/device_token.dart';
+import 'dart:convert';
 
 class User {
   String avatar_url;
@@ -12,7 +13,37 @@ class User {
   String description;
   String id;
 
-  User.fromJson(var map) {
+  User(
+      {this.avatar_url,
+      this.deviceID,
+      this.display_name,
+      this.email,
+      this.level_id,
+      this.coin,
+      this.birthday,
+      this.school,
+      this.description,
+      this.id});
+
+  User.fromJson(String userJson) {
+    print("USER $userJson");
+    Map<String, dynamic> map = json.decode(userJson);
+    id = map["id"];
+    avatar_url = map["avatar_url"];
+    display_name = map["display_name"];
+    email = map["email"];
+    level_id = map["level_id"];
+    coin = map["coin"];
+    birthday = map["birthday"];
+    school = map["school"];
+    description = map["description"];
+  }
+
+  String toJson() {
+    return json.encode(toMap());
+  }
+
+  User.fromMap(var map) {
     print("USER $map");
     id = map["id"];
     avatar_url = map["avatar_url"];
@@ -23,10 +54,9 @@ class User {
     birthday = map["birthday"];
     school = map["school"];
     description = map["description"];
-    deviceID = map["deviceID"];
   }
 
-  String toJson() {
+  Map<String, dynamic> toMap() {
     return {
       "id": id,
       "avatar_url": avatar_url,
@@ -37,7 +67,6 @@ class User {
       "birthday": birthday,
       "school": school,
       "description": description,
-      "deviceID": deviceID
-    }.toString();
+    };
   }
 }

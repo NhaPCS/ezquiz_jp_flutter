@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
+import 'package:ezquiz_flutter/model/user.dart';
+import 'package:ezquiz_flutter/data/shared_value.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -9,6 +11,26 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileState extends State<ProfileScreen> {
+  User _user;
+  TextEditingController _displayNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _levelController = TextEditingController();
+
+  @override
+  void initState() {
+    ShareValueProvider.shareValueProvider.getUserProfile().then((User user) {
+      setState(() {
+        _user = user;
+        if (_user != null) {
+          _displayNameController.text = _user.display_name;
+          _emailController.text = _user.email;
+          _levelController.text = _user.level_id.toUpperCase();
+        }
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,15 +52,18 @@ class _ProfileState extends State<ProfileScreen> {
           width: double.infinity,
           height: double.infinity,
           child: Container(
-            padding: SizeUtil.defaultMargin,
             color: ColorUtil.primaryColor,
             child: SingleChildScrollView(
+              padding: SizeUtil.defaultMargin,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  WidgetUtil.getCircleImage(SizeUtil.avatarSizeBig,
-                      "https://images.pexels.com/photos/638700/pexels-photo-638700.jpeg"),
+                  Image.asset(
+                    "icons/logo.png",
+                    width: SizeUtil.avatarSizeBig,
+                    height: SizeUtil.avatarSizeBig,
+                  ),
                   Container(
                     height: SizeUtil.spaceBig,
                   ),
@@ -51,7 +76,7 @@ class _ProfileState extends State<ProfileScreen> {
                         width: SizeUtil.spaceDefault,
                       ),
                       Text(
-                        "95 coins",
+                        "${_user == null ? "0" : _user.coin} coins",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.orange, fontWeight: FontWeight.bold),
@@ -77,8 +102,7 @@ class _ProfileState extends State<ProfileScreen> {
                     ),
                     child: Padding(
                       padding: EdgeInsets.only(
-                          left: SizeUtil.spaceBig,
-                          right: SizeUtil.spaceBig),
+                          left: SizeUtil.spaceBig),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
@@ -88,6 +112,7 @@ class _ProfileState extends State<ProfileScreen> {
                               Text("Display name"),
                               Expanded(
                                 child: TextField(
+                                  controller: _displayNameController,
                                   textAlign: TextAlign.end,
                                   decoration: InputDecoration(
                                     contentPadding: SizeUtil.defaultMargin,
@@ -105,6 +130,7 @@ class _ProfileState extends State<ProfileScreen> {
                               Text("Email"),
                               Expanded(
                                 child: TextField(
+                                  controller: _emailController,
                                   textAlign: TextAlign.end,
                                   decoration: InputDecoration(
                                     contentPadding: SizeUtil.defaultMargin,
@@ -139,6 +165,7 @@ class _ProfileState extends State<ProfileScreen> {
                               Text("Level"),
                               Expanded(
                                 child: TextField(
+                                  controller: _levelController,
                                   textAlign: TextAlign.end,
                                   decoration: InputDecoration(
                                     contentPadding: SizeUtil.defaultMargin,
@@ -173,9 +200,9 @@ class _ProfileState extends State<ProfileScreen> {
                   ),
                   Padding(
                     padding: SizeUtil.defaultMargin,
-                    child: WidgetUtil.getRoundedButtonWhite(
-                        context, "Done", () {
-                          Navigator.of(context).pop();
+                    child:
+                        WidgetUtil.getRoundedButtonWhite(context, "Done", () {
+                      Navigator.of(context).pop();
                     }),
                   )
                 ],

@@ -5,6 +5,7 @@ class ShareValueProvider {
   final String _currentLevel = "current_level";
   final String _apiUrl = "api_url";
   final String _userProfile = "user_profile";
+  final String _deviceToken = "device_token";
   static User _currentUser;
 
   ShareValueProvider._();
@@ -53,5 +54,16 @@ class ShareValueProvider {
       } else
         return null;
     }
+  }
+
+  void saveDeviceToken(String deviceToken) async {
+    final shareValueProvider = await SharedPreferences.getInstance();
+    if (deviceToken != null)
+      shareValueProvider.setString(_deviceToken, deviceToken);
+  }
+
+  Future<String> getDeviceToken() async {
+    final shareValueProvider = await SharedPreferences.getInstance();
+    return shareValueProvider.getString(_deviceToken);
   }
 }

@@ -1,4 +1,4 @@
-import 'package:ezquiz_flutter/model/test.dart';
+
 
 final String tableCategory = 'category';
 final String _id = 'id';
@@ -9,8 +9,6 @@ class Category {
   String title;
   String id;
   String levelId;
-
-  List<TestModel> lisTest;
 
   Category({this.id, this.title, this.levelId});
 

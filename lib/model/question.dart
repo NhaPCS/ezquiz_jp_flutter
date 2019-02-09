@@ -4,7 +4,7 @@ class Question {
   Map<String, String> answers;
   String selectedAnswer;
 
-  Question.fromJson(var map) {
+  Question.fromMap(var map) {
     question = map["question"];
     answer = map["answer"];
     answers = Map();

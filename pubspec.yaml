@@ -41,7 +41,10 @@ dev_dependencies:
   http: ^0.12.0+1
   flutter_inapp_purchase: ^0.8.8
   firebase_admob: ^0.8.0
-
+  launch_review: ^1.0.1
+  google_sign_in: ^4.0.1
+  firebase_messaging: ^3.0.1
+  package_info: ^0.4.0+1
 
 
 
@@ -64,10 +67,9 @@ flutter:
           - asset: fonts/bold.ttf
           - asset: fonts/light.ttf
             style: italic
-#      - family: qlunky
-#        fonts:
-#          - asset: qlunky.otf
-#          - asset: trouper.otf
+      - family: trattello
+        fonts:
+          - asset: fonts/trattatello.ttf
 
 
   # To add assets to your application, add an assets section, like this:
