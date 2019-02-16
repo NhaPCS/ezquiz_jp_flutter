@@ -52,19 +52,16 @@ class _PaymentItemState extends State<PaymentItem> {
                   borderRadius: BorderRadius.circular(SizeUtil.defaultRadius)),
             ),
             Container(
-              width: SizeUtil.spaceBig,
+              width: SizeUtil.spaceDefault,
             ),
             Text(
-              "123",
+              '${_coin.coin}',
               style:
                   TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
             ),
             Icon(
               Icons.attach_money,
               color: Colors.orange,
-            ),
-            Container(
-              width: SizeUtil.spaceSmall,
             ),
           ],
         ),

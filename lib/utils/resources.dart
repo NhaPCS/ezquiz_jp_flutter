@@ -20,9 +20,9 @@ class SizeUtil {
   static const double iconSize = 32;
   static const double iconSizeTiny = 13;
 
-  static const double textSizeDefault = 18;
-  static const double textSizeSmall = 13;
-  static const double textSizeTiny = 10;
+  static const double textSizeDefault = 17;
+  static const double textSizeSmall = 12;
+  static const double textSizeTiny = 9;
   static const double textSizeBig = 35;
   static const double textSizeHuge = 50;
   static const double textSizeSuperHuge = 90;

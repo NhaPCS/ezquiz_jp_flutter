@@ -216,18 +216,7 @@ class _HistoryItem extends State<HistoryItem> {
                       Expanded(
                         child: RaisedButton(
                           onPressed: () {
-                            Navigator.pop(context);
-                            getTestModel(_testResult.test_id)
-                                .then((TestModel test) {
-                              if (test != null) {
-                                test.id = _testResult.test_id;
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TestingScreen(test, false)));
-                              }
-                            });
+                            _onDoGain();
                           },
                           child: Text(
                             "Do it again",
@@ -242,18 +231,7 @@ class _HistoryItem extends State<HistoryItem> {
                       Expanded(
                         child: RaisedButton(
                           onPressed: () {
-                            Navigator.pop(context);
-                            getTestModel(_testResult.test_id)
-                                .then((TestModel test) {
-                              if (test != null) {
-                                test.id = _testResult.test_id;
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TestingScreen(test, true)));
-                              }
-                            });
+                            _onViewAnswer();
                           },
                           child: Text(
                             "View answer",
@@ -269,6 +247,30 @@ class _HistoryItem extends State<HistoryItem> {
             ),
           );
         });
+  }
+
+  void _onViewAnswer() {
+    Navigator.pop(context);
+    getTestModel(_testResult.test_id).then((TestModel test) {
+      if (test != null) {
+        test.id = _testResult.test_id;
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => TestingScreen(test, true)));
+      }
+    });
+  }
+
+  void _onDoGain() {
+    Navigator.pop(context);
+    getTestModel(_testResult.test_id).then((TestModel test) {
+      if (test != null) {
+        test.id = _testResult.test_id;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TestingScreen(test, false)));
+      }
+    });
   }
 
   int _getDurationMinute() {
