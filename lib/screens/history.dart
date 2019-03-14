@@ -74,15 +74,15 @@ class _HistoryState extends State<HistoryScreen> {
           ),
         ),
         itemBuilder: (BuildContext context) {
-          return _mapTypes.keys.map((String id) {
-            return PopupMenuItem<String>(
-              child: Text(
-                _mapTypes[id],
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              value: id,
-            );
-          }).toList();
+            return _mapTypes.keys.map((String id) {
+              return PopupMenuItem<String>(
+                child: Text(
+                  _mapTypes[id],
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                value: id,
+              );
+            }).toList();
         },
         onSelected: (String value) {});
   }
