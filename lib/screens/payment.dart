@@ -126,21 +126,31 @@ class _PaymentState extends State<PaymentScreen>
               Container(
                 height: SizeUtil.spaceBig,
               ),
-              StaggeredGridView.countBuilder(
-                crossAxisCount: 2,
-                itemCount: _listCoins.length,
-                shrinkWrap: true,
-                mainAxisSpacing: SizeUtil.spaceBig,
-                crossAxisSpacing: SizeUtil.spaceBig,
-                itemBuilder: ((context, int index) {
-                  return PaymentItem(
-                    coin: _listCoins[index],
-                  );
-                }),
-                staggeredTileBuilder: (int index) {
-                  return new StaggeredTile.fit(1);
-                },
+              Container(
+                padding: SizeUtil.defaultPadding,
+                child: Text(
+                  "Click on the icon on the right and watching ads can help you get more coins.",
+                  textAlign: TextAlign.center,
+                ),
               ),
+              Container(
+                height: SizeUtil.spaceDefault,
+              ),
+//              StaggeredGridView.countBuilder(
+//                crossAxisCount: 2,
+//                itemCount: _listCoins.length,
+//                shrinkWrap: true,
+//                mainAxisSpacing: SizeUtil.spaceBig,
+//                crossAxisSpacing: SizeUtil.spaceBig,
+//                itemBuilder: ((context, int index) {
+//                  return PaymentItem(
+//                    coin: _listCoins[index],
+//                  );
+//                }),
+//                staggeredTileBuilder: (int index) {
+//                  return new StaggeredTile.fit(1);
+//                },
+//              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
