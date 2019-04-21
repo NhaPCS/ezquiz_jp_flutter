@@ -128,10 +128,12 @@ class _SignUpState extends State<SignUpScreen> {
                         ),
                       ),
                       onPressed: () {
-                        createUser(_emailController.text, _passController.text)
+                        createUser(context, _emailController.text,
+                                _passController.text)
                             .then((success) {
                           if (success) {
-                            Navigator.pop(context);
+                            Navigator.popUntil(
+                                context, ModalRoute.withName("home"));
                           } else {
                             WidgetUtil.showMessageDialog(context, "Error",
                                 "Signup failed. Please check and try again!");

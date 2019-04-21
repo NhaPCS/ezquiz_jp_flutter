@@ -13,14 +13,11 @@ class HistoryItem extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _HistoryItem(testResult);
+    return _HistoryItem();
   }
 }
 
 class _HistoryItem extends State<HistoryItem> {
-  final TestResult _testResult;
-
-  _HistoryItem(this._testResult);
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +53,12 @@ class _HistoryItem extends State<HistoryItem> {
                       color: ColorUtil.primaryColor, shape: BoxShape.circle),
                 ),
                 Text(
-                  _testResult.total_point == null
+                  widget.testResult.total_point == null
                       ? ""
-                      : "${_testResult.total_point}",
+                      : "${widget.testResult.total_point}",
                   style: TextStyle(
                       fontFamily: "trattello",
-                      color: _testResult.getColor(),
+                      color: widget.testResult.getColor(),
                       fontSize: SizeUtil.textSizeBig),
                 ),
                 Container(
@@ -94,7 +91,7 @@ class _HistoryItem extends State<HistoryItem> {
                   Text(
                     DateFormat("dd/MM/yyyy").format(
                         DateTime.fromMicrosecondsSinceEpoch(
-                            _testResult.test_time * 1000)),
+                            widget.testResult.test_time * 1000)),
                     style: TextStyle(
                         color: ColorUtil.primaryColor,
                         fontWeight: FontWeight.bold),
@@ -103,7 +100,7 @@ class _HistoryItem extends State<HistoryItem> {
                     height: SizeUtil.spaceDefault,
                   ),
                   Text(
-                    "${DateFormat("HH:mm").format(DateTime.fromMicrosecondsSinceEpoch(_testResult.test_time * 1000))} - ${_testResult.test_name}",
+                    "${DateFormat("HH:mm").format(DateTime.fromMicrosecondsSinceEpoch(widget.testResult.test_time * 1000))} - ${widget.testResult.test_name}",
                     style: TextStyle(
                         color: ColorUtil.textColor,
                         fontWeight: FontWeight.bold),
@@ -119,7 +116,7 @@ class _HistoryItem extends State<HistoryItem> {
                     ),
                   ),
                   Text(
-                    "You got ${_testResult.correct_count}/${_testResult.correct_count + _testResult.wrong_count} the correct answer",
+                    "You got ${widget.testResult.correct_count}/${widget.testResult.correct_count + widget.testResult.wrong_count} the correct answer",
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       color: ColorUtil.textGray,
@@ -158,7 +155,7 @@ class _HistoryItem extends State<HistoryItem> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    "${_testResult.test_name}",
+                    "${widget.testResult.test_name}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: ColorUtil.primaryColor,
@@ -168,12 +165,12 @@ class _HistoryItem extends State<HistoryItem> {
                     height: SizeUtil.spaceBig,
                   ),
                   Text(
-                    "${_testResult.total_point}",
+                    "${widget.testResult.total_point}",
                     style: TextStyle(
                         fontFamily: "trattello",
                         fontSize: SizeUtil.textSizeSuperHuge,
                         fontWeight: FontWeight.bold,
-                        color: _testResult.getColor()),
+                        color: widget.testResult.getColor()),
                   ),
                   Container(
                     height: SizeUtil.spaceDefault,
@@ -187,7 +184,7 @@ class _HistoryItem extends State<HistoryItem> {
                           shape: BoxShape.circle),
                     ),
                     title: Text(
-                        "You got ${_testResult.correct_count} correct answers."),
+                        "You got ${widget.testResult.correct_count} correct answers."),
                   ),
                   ListTile(
                     leading: Container(
@@ -209,7 +206,7 @@ class _HistoryItem extends State<HistoryItem> {
                           shape: BoxShape.circle),
                     ),
                     title: Text(
-                        "Test time at: ${DateFormat("HH:mm - dd/MM/yyyy").format(DateTime.fromMicrosecondsSinceEpoch(_testResult.test_time * 1000))}"),
+                        "Test time at: ${DateFormat("HH:mm - dd/MM/yyyy").format(DateTime.fromMicrosecondsSinceEpoch(widget.testResult.test_time * 1000))}"),
                   ),
                   Row(
                     children: <Widget>[
@@ -251,9 +248,9 @@ class _HistoryItem extends State<HistoryItem> {
 
   void _onViewAnswer() {
     Navigator.pop(context);
-    getTestModel(_testResult.test_id).then((TestModel test) {
+    getTestModel(widget.testResult.test_id).then((TestModel test) {
       if (test != null) {
-        test.id = _testResult.test_id;
+        test.id = widget.testResult.test_id;
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => TestingScreen(test, true)));
       }
@@ -262,9 +259,9 @@ class _HistoryItem extends State<HistoryItem> {
 
   void _onDoGain() {
     Navigator.pop(context);
-    getTestModel(_testResult.test_id).then((TestModel test) {
+    getTestModel(widget.testResult.test_id).then((TestModel test) {
       if (test != null) {
-        test.id = _testResult.test_id;
+        test.id = widget.testResult.test_id;
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -274,8 +271,8 @@ class _HistoryItem extends State<HistoryItem> {
   }
 
   int _getDurationMinute() {
-    if (_testResult == null || _testResult.test_duration == null) return 0;
-    int duration = (_testResult.test_duration / 60).round();
+    if (widget.testResult == null || widget.testResult.test_duration == null) return 0;
+    int duration = (widget.testResult.test_duration / 60).round();
     return duration == 0 ? 1 : duration;
   }
 }

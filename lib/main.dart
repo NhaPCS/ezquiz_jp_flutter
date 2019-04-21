@@ -7,6 +7,7 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:ezquiz_flutter/screens/screen.dart';
 
 void main() => runApp(MaterialApp(
       home: MyApp(),

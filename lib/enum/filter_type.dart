@@ -1,0 +1,1 @@
+enum FilterType { most_rate, free, hasFee, most_done, none }

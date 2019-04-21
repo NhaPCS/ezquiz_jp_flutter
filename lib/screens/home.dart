@@ -10,8 +10,14 @@ import 'package:ezquiz_flutter/screens/profile.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/screens/search.dart';
-
-enum FilterType { most_rate, free, hasFee, most_done, none }
+import 'package:launch_review/launch_review.dart';
+import 'package:app_review/app_review.dart';
+import 'package:share/share.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'dart:io';
+import 'package:device_info/device_info.dart';
+import 'package:ezquiz_flutter/enum/filter_type.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Category> _listCategories;
@@ -222,7 +228,7 @@ class _HomeState extends State<HomeScreen>
   Drawer getDrawer() {
     return Drawer(
       child: ListView.builder(
-        itemCount: _listMenu.length,
+        itemCount: _listMenu.length + 1,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return ProfileHeader();
@@ -257,17 +263,42 @@ class _HomeState extends State<HomeScreen>
                 MaterialPageRoute(builder: (context) => PaymentScreen()));
             break;
           case 6:
+            AppReview.requestReview.then((onValue) {
+              print(onValue);
+            });
+            break;
           case 7:
+            LaunchReview.launch();
+            break;
+          case 8:
+            AppReview.writeReview.then((onValue) {
+              print(onValue);
+              final RenderBox box = context.findRenderObject();
+              Share.share("$onValue",
+                  sharePositionOrigin:
+                      box.localToGlobal(Offset.zero) & box.size);
+            });
+            break;
+          case 9:
+            _sendFeedback();
             break;
           case 4:
             Navigator.of(context).pop();
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => PaymentScreen()));
             break;
-          case 4:
-            Navigator.of(context).pop();
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PaymentScreen()));
+          case 11:
+            FirebaseAuth.instance.currentUser().then((user) {
+              if (user != null) {
+                WidgetUtil.showAlertDialog(context, "Confirmation",
+                    "Are you sure want to logout?", "Yes", () {
+                  FirebaseAuth.instance.signOut();
+                  ShareValueProvider.shareValueProvider.saveUserProfile(null);
+                  Navigator.of(context).popUntil(ModalRoute.withName("home"));
+                });
+              }
+            });
+
             break;
         }
       },
@@ -281,9 +312,32 @@ class _HomeState extends State<HomeScreen>
     );
   }
 
+  _sendFeedback() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String body = "";
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      body += "Model: " + androidInfo.model + "\n";
+      body += "BaseOs: " + androidInfo.version.baseOS + "\n";
+      body += "SdkInt: " + androidInfo.version.sdkInt.toString() + "\n";
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      body += "Model: " + iosInfo.model + "\n";
+      body += "SystemName: " + iosInfo.systemName + "\n";
+      body += "SystemVersion: " + iosInfo.systemVersion + "\n";
+      body += "Name: " + iosInfo.name + "\n";
+    }
+    final Email email = Email(
+      body: body,
+      subject: 'Feedback for EzTrans - Book reading',
+      recipients: ['phamnha0209.1995@gmail.com'],
+    );
+    await FlutterEmailSender.send(email);
+  }
+
   List<Menu> getMenus() {
     List<Menu> menus = List();
-    menus.add(Menu(WidgetUtil.getIcon(context, Icons.home), " Home"));
+    menus.add(Menu(WidgetUtil.getIcon(context, Icons.home), "Home"));
     menus.add(Menu(WidgetUtil.getIcon(context, Icons.history), "History"));
     menus.add(Menu(WidgetUtil.getIcon(context, Icons.person), " Profile"));
     menus

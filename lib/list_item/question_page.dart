@@ -1,7 +1,7 @@
 import 'package:ezquiz_flutter/model/question.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html_view/flutter_html_text.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class QuestionPage extends StatefulWidget {
   final Question question;
@@ -13,7 +13,7 @@ class QuestionPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _QuestionPageState(question, selectedAnswerCallBack, isViewAnswer);
+    return _QuestionPageState();
   }
 }
 
@@ -21,17 +21,11 @@ typedef SelectedAnswerCallBack = void Function(int index);
 
 class _QuestionPageState extends State<QuestionPage>
     with AutomaticKeepAliveClientMixin<QuestionPage> {
-  final Question _question;
-  final VoidCallback _selectedAnswerCallBack;
   String _radioGroup = "";
-  final bool _isViewAnswer;
-
-  _QuestionPageState(
-      this._question, this._selectedAnswerCallBack, this._isViewAnswer);
 
   @override
   void initState() {
-    _radioGroup = _question.selectedAnswer;
+    _radioGroup = widget.question.selectedAnswer;
     super.initState();
   }
 
@@ -47,8 +41,8 @@ class _QuestionPageState extends State<QuestionPage>
         padding: SizeUtil.defaultPadding,
         child: ListView(
           children: <Widget>[
-            HtmlText(
-              data: _question.question,
+            Html(
+              data: widget.question.question,
             ),
             Container(
               height: SizeUtil.spaceDefault,
@@ -98,14 +92,14 @@ class _QuestionPageState extends State<QuestionPage>
   }
 
   _onChooseAnswer(String answer) {
-    if (_isViewAnswer) return;
+    if (widget.isViewAnswer) return;
     print("choose $answer");
-    _question.selectedAnswer = answer;
+    widget.question.selectedAnswer = answer;
     setState(() {
       _radioGroup = answer;
     });
     Future.delayed(const Duration(milliseconds: 1000), () {
-      _selectedAnswerCallBack();
+      widget.selectedAnswerCallBack();
     });
   }
 
@@ -121,9 +115,9 @@ class _QuestionPageState extends State<QuestionPage>
                 _onChooseAnswer(value);
               }),
           Expanded(
-            child: HtmlText(
-              data: _question.answers[answer],
-              color: getAnswerColor(answer),
+            child: Html(
+              data: widget.question.answers[answer],
+              defaultTextStyle: TextStyle(color: getAnswerColor(answer)),
             ),
           ),
           getAnswerIcon(answer),
@@ -136,50 +130,50 @@ class _QuestionPageState extends State<QuestionPage>
   }
 
   Color getAnswerColor(String answer) {
-    if (!_isViewAnswer) return ColorUtil.textColor;
-    if (_question.answer == null) return ColorUtil.textColor;
-    if (_question.selectedAnswer != null) {
-      if (_question.answer.toLowerCase() ==
-              _question.selectedAnswer.toLowerCase() &&
-          _question.selectedAnswer == answer.toLowerCase())
+    if (!widget.isViewAnswer) return ColorUtil.textColor;
+    if (widget.question.answer == null) return ColorUtil.textColor;
+    if (widget.question.selectedAnswer != null) {
+      if (widget.question.answer.toLowerCase() ==
+          widget.question.selectedAnswer.toLowerCase() &&
+          widget.question.selectedAnswer == answer.toLowerCase())
         return Colors.green;
       else {
-        if (_question.answer.toLowerCase() !=
-            _question.selectedAnswer.toLowerCase()) {
-          if (_question.selectedAnswer == answer.toLowerCase()) {
+        if (widget.question.answer.toLowerCase() !=
+            widget.question.selectedAnswer.toLowerCase()) {
+          if (widget.question.selectedAnswer == answer.toLowerCase()) {
             return Colors.red;
           }
-          if (_question.answer == answer.toLowerCase()) {
+          if (widget.question.answer == answer.toLowerCase()) {
             return Colors.green;
           }
         }
       }
-    } else if (_question.answer == answer) {
+    } else if (widget.question.answer == answer) {
       return Colors.green;
     }
     return ColorUtil.textColor;
   }
 
   Widget getAnswerIcon(String answer) {
-    if (!_isViewAnswer) return Container();
-    if (_question.answer == null) return Container();
-    if (_question.selectedAnswer != null) {
-      if (_question.answer.toLowerCase() ==
-              _question.selectedAnswer.toLowerCase() &&
-          _question.selectedAnswer == answer.toLowerCase())
+    if (!widget.isViewAnswer) return Container();
+    if (widget.question.answer == null) return Container();
+    if (widget.question.selectedAnswer != null) {
+      if (widget.question.answer.toLowerCase() ==
+          widget.question.selectedAnswer.toLowerCase() &&
+          widget.question.selectedAnswer == answer.toLowerCase())
         return Icon(Icons.done_all, color: Colors.green);
       else {
-        if (_question.answer.toLowerCase() !=
-            _question.selectedAnswer.toLowerCase()) {
-          if (_question.selectedAnswer == answer.toLowerCase()) {
+        if (widget.question.answer.toLowerCase() !=
+            widget.question.selectedAnswer.toLowerCase()) {
+          if (widget.question.selectedAnswer == answer.toLowerCase()) {
             return Icon(Icons.close, color: Colors.red);
           }
-          if (_question.answer == answer.toLowerCase()) {
+          if (widget.question.answer == answer.toLowerCase()) {
             return Icon(Icons.done, color: Colors.green);
           }
         }
       }
-    } else if (_question.answer == answer) {
+    } else if (widget.question.answer == answer) {
       return Icon(Icons.done_all, color: Colors.green);
     }
     return Container();

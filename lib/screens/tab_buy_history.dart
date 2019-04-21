@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ezquiz_flutter/utils/resources.dart';
 import 'package:ezquiz_flutter/model/payment_history.dart';
-import 'package:flutter_html_view/flutter_html_text.dart';
-import 'package:intl/intl.dart';
 
 class TabBuy extends StatefulWidget {
   final List<PaymentHistory> listPaymentHistory;

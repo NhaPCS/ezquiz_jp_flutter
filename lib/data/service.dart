@@ -18,6 +18,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ezquiz_flutter/utils/resources.dart';
 
 Future<List<TestModel>> getListTest(Category category) async {
   DataSnapshot dataSnapshot = await FirebaseDatabase.instance
@@ -61,8 +63,9 @@ void changeLevel(BuildContext context, String level) async {
     await getListTest(category);
     _index++;
     if (_index == _totalSize) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomeScreen(categories)));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          settings: RouteSettings(name: "home"),
+          builder: (context) => HomeScreen(categories)));
       print("print here push new screen");
     }
   });
@@ -149,13 +152,18 @@ Future<bool> sigIn(String email, String pass) async {
   return user != null;
 }
 
-Future<bool> createUser(String email, String pass) async {
-  FirebaseUser user = await FirebaseAuth.instance
-      .createUserWithEmailAndPassword(email: email, password: pass);
-  return user != null;
+Future<bool> createUser(BuildContext context, String email, String pass) async {
+  try {
+    FirebaseUser user = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: pass);
+    return user != null;
+  } on Exception catch(e){
+    WidgetUtil.showErrorDialog(context, e.toString());
+    return null;
+  }
 }
 
-Future<void> getUserProfile() async {
+Future<User> getUserProfile() async {
   FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
   if (firebaseUser != null) {
     await saveUserIfNeed(
@@ -167,12 +175,14 @@ Future<void> getUserProfile() async {
         .once();
     if (dataSnapshot.value != null && dataSnapshot.value["id"] != null) {
       print("Value user ${dataSnapshot.value}");
-      ShareValueProvider.shareValueProvider.saveUserProfile(dataSnapshot.value);
+      User user = User.fromMap(dataSnapshot.value);
+      ShareValueProvider.shareValueProvider.saveUserProfile(user);
+      return user;
     } else {
       ShareValueProvider.shareValueProvider.saveUserProfile(null);
+      return null;
     }
   }
-  return;
 }
 
 Future<BaseResponse> buyTest(BuildContext context, TestModel test) async {
@@ -338,7 +348,7 @@ Future<User> saveUserIfNeed(String uid, String email, String name) async {
         .child("deviceID")
         .child(messagingToken)
         .set(deviceToken.toMap());
-    ShareValueProvider.shareValueProvider.saveUserProfile(user.toJson());
+    ShareValueProvider.shareValueProvider.saveUserProfile(user);
     return user;
   } else {
     FirebaseDatabase.instance
@@ -349,7 +359,7 @@ Future<User> saveUserIfNeed(String uid, String email, String name) async {
         .child(messagingToken)
         .set(deviceToken.toMap());
     User user = User.fromMap(snapshot.value);
-    ShareValueProvider.shareValueProvider.saveUserProfile(user.toJson());
+    ShareValueProvider.shareValueProvider.saveUserProfile(user);
     return user;
   }
 }

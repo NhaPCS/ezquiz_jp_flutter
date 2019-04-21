@@ -16,18 +16,14 @@ class TestItem extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return TestItemState(testModel);
+    return TestItemState();
   }
 }
 
 class TestItemState extends State<TestItem> {
-  final TestModel _testModel;
-
-  TestItemState(this._testModel);
-
   @override
   Widget build(BuildContext context) {
-    return getTestWidget(_testModel);
+    return getTestWidget(widget.testModel);
   }
 
   Widget getTestWidget(TestModel test) {

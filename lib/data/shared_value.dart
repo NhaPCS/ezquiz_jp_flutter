@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ezquiz_flutter/model/user.dart';
+import 'dart:convert';
 
 class ShareValueProvider {
   final String _currentLevel = "current_level";
@@ -34,22 +35,25 @@ class ShareValueProvider {
     shareValueProvider.setString(_apiUrl, url);
   }
 
-  void saveUserProfile(String user) async {
+  void saveUserProfile(User user) async {
+    _currentUser = user;
     final shareValueProvider = await SharedPreferences.getInstance();
     if (user == null) {
       shareValueProvider.remove(_userProfile);
     } else
-      shareValueProvider.setString(_userProfile, user);
+      shareValueProvider.setString(_userProfile, json.encode(user));
   }
 
   Future<User> getUserProfile() async {
-    if (_currentUser != null)
+    if (_currentUser != null && _currentUser.email != null)
       return _currentUser;
     else {
       final shareValueProvider = await SharedPreferences.getInstance();
-      String json = shareValueProvider.getString(_userProfile);
-      if (json != null) {
-        _currentUser = User.fromJson(json);
+      String userJson = shareValueProvider.getString(_userProfile);
+      if (userJson != null) {
+        Map<String, dynamic> map =
+            jsonDecode(jsonDecode(userJson)) as Map<String, dynamic>;
+        _currentUser = User.fromMap(map);
         return _currentUser;
       } else
         return null;
